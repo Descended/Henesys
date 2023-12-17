@@ -1,10 +1,13 @@
 # Henesys
 
+# NOTE: This is still a work in progress join the discord for questions.
+
 ## Overview
   Henesys is a Java-based Maplestory Emulator designed for v95
 
   This emulator should be built and run on Java 21 in order to run properly
 
+  [Discord](https://discord.gg/X2P2ttJTZa)
 
 ## Setup
 
