@@ -558,46 +558,4 @@ public class Util {
             }
         }
     }
-
-    // @author Asura
-    public static int convertDegreeToDumbFuckingNexonsWayOfDoingDegreesForObstacleAtoms(int angle) {
-        List<Tuple> tuples = Arrays.asList(
-                new Tuple<>(45, 30),
-                new Tuple<>(90, 50),
-                new Tuple<>(135, 90),
-                new Tuple<>(180, 180),
-                new Tuple<>(225, 270),
-                new Tuple<>(270, 310),
-                new Tuple<>(315, 330),
-                new Tuple<>(360, 360)
-        );
-
-        for (Tuple t : tuples) {
-            int cutOffAngle = (int) t.getLeft();
-            int angleTranslation = (int) t.getRight();
-
-            if (angle <= cutOffAngle) {
-                return (int) (((double) angle / cutOffAngle) * angleTranslation);
-            }
-        }
-
-        return 0;
-    }
-
-
-    /**
-     * +     * Compute the SHA-1 hash of the bytes in the given buffer
-     * +     * @param toHash ByteBuffer
-     * +     * @return byte[]
-     * +
-     */
-    public static byte[] sha1Hash(byte[] toHash) {
-        try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.update(toHash);
-            return crypt.digest();
-        } catch (NoSuchAlgorithmException nsae) {
-            return null;
-        }
-    }
 }
