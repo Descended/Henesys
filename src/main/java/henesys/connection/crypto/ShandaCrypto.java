@@ -8,24 +8,40 @@ package henesys.connection.crypto;
  */
 public class ShandaCrypto {
 
-    private static final byte ROLL_LEFT_ENCRYPT = 3;
-    private static final byte ROLL_RIGHT_ENCRYPT = 4;
-    private static final byte ROLL_LEFT_DECRYPT = 4;
-    private static final byte ROLL_RIGHT_DECRYPT = 3;
-    private static final byte ADDITION_CONSTANT = 0x48;
-    private static final byte XOR_CONSTANT = 0x13;
-
     /**
      * Encrypts the data using the Shanda encryption method.
      *  @param data The data to encrypt.
      *  @return The encrypted data.
      * */
-    public static byte[] encrypt(byte[] data) {
+    public static byte[] encryptData(byte[] data) {
         for (int j = 0; j < 6; j++) {
+            byte remember = 0;
+            byte dataLength = (byte) (data.length & 0xFF);
             if (j % 2 == 0) {
-                data = transformData(data, ROLL_LEFT_ENCRYPT, ADDITION_CONSTANT, true);
+                for (int i = 0; i < data.length; i++) {
+                    byte cur = data[i];
+                    cur = BitTools.rollLeft(cur, 3);
+                    cur += dataLength;
+                    cur ^= remember;
+                    remember = cur;
+                    cur = BitTools.rollRight(cur, (int) dataLength & 0xFF);
+                    cur = ((byte) ((~cur) & 0xFF));
+                    cur += 0x48;
+                    dataLength--;
+                    data[i] = cur;
+                }
             } else {
-                data = transformData(data, ROLL_RIGHT_ENCRYPT, XOR_CONSTANT, false);
+                for (int i = data.length - 1; i >= 0; i--) {
+                    byte cur = data[i];
+                    cur = BitTools.rollLeft(cur, 4);
+                    cur += dataLength;
+                    cur ^= remember;
+                    remember = cur;
+                    cur ^= 0x13;
+                    cur = BitTools.rollRight(cur, 3);
+                    dataLength--;
+                    data[i] = cur;
+                }
             }
         }
         return data;
@@ -36,44 +52,41 @@ public class ShandaCrypto {
      *  @param data The data to decrypt.
      *  @return The decrypted data.
      * */
-
     public static byte[] decryptData(byte[] data) {
         for (int j = 1; j <= 6; j++) {
+            byte remember = 0;
+            byte dataLength = (byte) (data.length & 0xFF);
+            byte nextRemember;
             if (j % 2 == 0) {
-                data = transformData(data, ROLL_RIGHT_DECRYPT, ADDITION_CONSTANT, true);
+                for (int i = 0; i < data.length; i++) {
+                    byte cur = data[i];
+                    cur -= 0x48;
+                    cur = ((byte) ((~cur) & 0xFF));
+                    cur = BitTools.rollLeft(cur, (int) dataLength & 0xFF);
+                    nextRemember = cur;
+                    cur ^= remember;
+                    remember = nextRemember;
+                    cur -= dataLength;
+                    cur = BitTools.rollRight(cur, 3);
+                    data[i] = cur;
+                    dataLength--;
+                }
             } else {
-                data = transformData(data, ROLL_LEFT_DECRYPT, XOR_CONSTANT, false);
+                for (int i = data.length - 1; i >= 0; i--) {
+                    byte cur = data[i];
+                    cur = BitTools.rollLeft(cur, 3);
+                    cur ^= 0x13;
+                    nextRemember = cur;
+                    cur ^= remember;
+                    remember = nextRemember;
+                    cur -= dataLength;
+                    cur = BitTools.rollRight(cur, 4);
+                    data[i] = cur;
+                    dataLength--;
+                }
             }
         }
         return data;
     }
 
-    /**
-     * Transforms the data using the Shanda encryption method.
-     *  @param data The data to transform.
-     *  @param rollValue The value to roll the data.
-     *  @param constant The constant to use.
-     *  @param isEncrypt Whether the data is being encrypted.
-     *  @return The transformed data.
-     * */
-    private static byte[] transformData(byte[] data, int rollValue, byte constant, boolean isEncrypt) {
-        byte remember = 0;
-        byte dataLength = (byte) (data.length & 0xFF);
-        int start = isEncrypt ? 0 : data.length - 1;
-        int end = isEncrypt ? data.length : -1;
-        int step = isEncrypt ? 1 : -1;
-
-        for (int i = start; isEncrypt ? i < end : i > end; i += step) {
-            byte current = data[i];
-            current = BitTools.rollLeft(current, rollValue);
-            current += isEncrypt ? dataLength : constant;
-            current ^= remember;
-            remember = current;
-            current ^= isEncrypt ? constant : dataLength;
-            current = BitTools.rollRight(current, rollValue);
-            data[i] = current;
-            dataLength--;
-        }
-        return data;
-    }
 }
