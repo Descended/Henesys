@@ -66,15 +66,15 @@ public class Login {
         outPacket.encodeString(world.getName());
         outPacket.encodeByte(world.getWorldState());
         outPacket.encodeString(world.getWorldEventDescription());
-        outPacket.encodeInt(world.getWorldEventEXP_WSE());
-        outPacket.encodeInt(world.getWorldEventDrop_WSE());
+        outPacket.encodeShort(world.getWorldEventEXP_WSE());
+        outPacket.encodeShort(world.getWorldEventDrop_WSE());
         outPacket.encodeByte(world.isCharCreateBlock());
         outPacket.encodeByte(world.getChannels().size());
         for (Channel channel : world.getChannels()) {
             outPacket.encodeString(channel.getName());
             outPacket.encodeInt(channel.getGaugePx());
-            outPacket.encodeInt(channel.getWorldId());
-            outPacket.encodeInt(channel.getChannelId());
+            outPacket.encodeByte(channel.getWorldId());
+            outPacket.encodeByte(channel.getChannelId());
             outPacket.encodeByte(channel.isAdultChannel());
         }
         if (stringInfos == null) {
