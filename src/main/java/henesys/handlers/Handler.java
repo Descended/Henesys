@@ -1,6 +1,6 @@
-package henesys.handler;
+package henesys.handlers;
 
-import henesys.handler.header.InHeader;
+import henesys.handlers.header.InHeader;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

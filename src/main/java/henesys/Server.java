@@ -1,6 +1,7 @@
 package henesys;
 
 import henesys.connection.crypto.MapleCrypto;
+import henesys.connection.netty.ChannelHandler;
 import henesys.connection.netty.ChatAcceptor;
 import henesys.connection.netty.LoginAcceptor;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +22,7 @@ public class Server extends Properties {
     public static void main(String[] args) {
         log.info("Starting Henesys server...");
         MapleCrypto.initialize(ServerConstants.VERSION);
+        ChannelHandler.initHandlers(false);
         new Thread(new LoginAcceptor()).start();
         new Thread(new ChatAcceptor()).start();
 
