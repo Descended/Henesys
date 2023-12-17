@@ -20,7 +20,9 @@ This project uses the following dependencies:
 
 - **Netty**: A non-blocking I/O client-server framework for the development of Java network applications such as protocol servers and clients.
 - **Log4j**: A reliable, fast and flexible logging framework (APIs) written in Java.
+- **HikariCP**: A solid, high-performance, JDBC connection pool at last.
 
 
 ## Credits
 * [Swordie](https://bitbucket.org/swordiemen/swordie/src/master/) - Lots of referencing from here
+* [Edelstein](https://github.com/Kaioru/Edelstein) - Packet Referencing from here
