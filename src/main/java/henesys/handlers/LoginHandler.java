@@ -1,5 +1,6 @@
 package henesys.handlers;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import henesys.Server;
 import henesys.ServerConfig;
 import henesys.client.Client;
@@ -21,7 +22,8 @@ public class LoginHandler {
         User user = userDao.findByUsername(username);
         if (user == null) {
             if (ServerConfig.AUTO_REGISTER) {
-                user = new User(username, password);
+                String encryptedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
+                user = new User(username, encryptedPassword);
                 userDao.registerUser(user);
                 c.setUser(user);
                 c.write(Login.checkPasswordResult(LoginType.Success, user));
@@ -29,7 +31,7 @@ public class LoginHandler {
                 c.write(Login.checkPasswordResult(LoginType.NotRegistered, null));
             }
         } else {
-            if (!user.getPassword().equals(password)) {
+            if (!BCrypt.verifyer().verify(password.toCharArray(), user.getPassword()).verified) { // If the password is incorrect
                 c.write(Login.checkPasswordResult(LoginType.IncorrectPassword, null));
                 return;
             }
