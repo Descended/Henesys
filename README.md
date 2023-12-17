@@ -20,4 +20,4 @@ This project uses the following dependencies:
 
 
 ## Credits
-* [Swordie]([https://github.com/Fraysa/Destiny](https://bitbucket.org/swordiemen/swordie/src/master/)https://bitbucket.org/swordiemen/swordie/src/master/) - Lots of referencing from here
+* [Swordie](https://bitbucket.org/swordiemen/swordie/src/master/) - Lots of referencing from here
