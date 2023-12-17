@@ -1,5 +1,6 @@
 package henesys.client;
 
+import henesys.ServerConfig;
 import henesys.client.character.Char;
 import henesys.enums.AccountType;
 import henesys.enums.PicStatus;
@@ -31,7 +32,7 @@ public class User {
     private int vipGrade;
     private int nBlockReason;
     private byte gender;
-    private byte msg2;
+    private byte accountMode;
     private byte purchaseExp;
     private byte pBlockReason;
     private byte gradeCode;
@@ -58,6 +59,7 @@ public class User {
         this.accountType = AccountType.Player;
         this.creationDate = FileTime.currentTime();
         this.accounts = new HashSet<>();
+        this.characterSlots = ServerConfig.MAX_CHARACTERS;
     }
 
     public static Logger getLog() {
@@ -237,12 +239,12 @@ public class User {
         this.gender = gender;
     }
 
-    public byte getMsg2() {
-        return msg2;
+    public byte getAccountMode() {
+        return accountMode;
     }
 
-    public void setMsg2(byte msg2) {
-        this.msg2 = msg2;
+    public void setAccountMode(byte accountMode) {
+        this.accountMode = accountMode;
     }
 
     public byte getPurchaseExp() {

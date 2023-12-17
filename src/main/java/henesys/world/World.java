@@ -10,6 +10,7 @@ public class World {
 
     private final int worldId;
     private final int worldState;
+    private boolean charCreateBlock;
     private final int worldEventEXP_WSE;
     private final int worldEventDrop_WSE;
     private final int boomUpEventNotice;
@@ -70,8 +71,27 @@ public class World {
         return dropRate;
     }
 
+    public int getWorldEventEXP_WSE() {
+        return worldEventEXP_WSE;
+    }
+
+    public int getWorldEventDrop_WSE() {
+        return worldEventDrop_WSE;
+    }
+
     public List<Channel> getChannels() {
         return channels;
     }
 
+    public int getWorldState() {
+        return worldState;
+    }
+
+    public boolean isCharCreateBlock() {
+        return charCreateBlock;
+    }
+
+    public void setCharCreateBlock(boolean charCreateBlock) {
+        this.charCreateBlock = charCreateBlock;
+    }
 }

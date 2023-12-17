@@ -1,6 +1,6 @@
 package henesys.connection;
 
-import henesys.handler.header.OutHeader;
+import henesys.handlers.header.OutHeader;
 import henesys.util.FileTime;
 import henesys.util.Position;
 import henesys.util.Rect;

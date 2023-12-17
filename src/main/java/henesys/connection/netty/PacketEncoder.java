@@ -18,9 +18,11 @@
 package henesys.connection.netty;
 
 import henesys.ServerConfig;
+import henesys.ServerConstants;
 import henesys.connection.OutPacket;
 import henesys.connection.crypto.MapleCrypto;
-import henesys.handler.header.OutHeader;
+import henesys.connection.crypto.ShandaCrypto;
+import henesys.handlers.header.OutHeader;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -53,6 +55,9 @@ public final class PacketEncoder extends MessageToByteEncoder<OutPacket> {
 
             c.acquireEncoderState();
             try {
+                if (ServerConstants.VERSION < 149) {
+                    ShandaCrypto.encryptData(data);
+                }
                 mCr.crypt(data, iv);
                 c.setSendIV(MapleCrypto.getNewIv(iv));
             } finally {
