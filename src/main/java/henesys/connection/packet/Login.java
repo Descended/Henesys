@@ -17,6 +17,12 @@ import java.util.Set;
  */
 public class Login {
 
+    /**
+     * Sends the connect packet to the client. This is called when the client connects to the server.
+     * @param siv The send IV.
+     * @param riv The receive IV.
+     * @return The OutPacket containing the connect packet.
+     */
     public static OutPacket sendConnect(byte[] siv, byte[] riv) {
         OutPacket outPacket = new OutPacket();
 
@@ -29,6 +35,12 @@ public class Login {
         return outPacket;
     }
 
+    /**
+     * Sends the login result to the client. This is called when the client sends a login request packet.
+     * @param loginType The login type.
+     * @param user The user.
+     * @return The OutPacket containing the login result.
+     */
     public static OutPacket checkPasswordResult(LoginType loginType, User user) {
         OutPacket outPacket = new OutPacket(OutHeader.CHECK_PASSWORD_RESULT.getValue());
         outPacket.encodeByte(loginType.getValue());
@@ -59,6 +71,13 @@ public class Login {
 
     }
 
+    /**
+     * Sends the world information to the client. This is called when the client sends a World Request packet. This
+     * happens when the User has successfully logged in. Each world gets its own World Information packet.
+     * @param world The world to send the information of.
+     * @param stringInfos The balloon information to send.
+     * @return The OutPacket containing the world information.
+     */
     public static OutPacket sendWorldInformation(World world, Set<Tuple<Position, String>> stringInfos) {
         // CLogin::OnWorldInformation
         OutPacket outPacket = new OutPacket(OutHeader.WORLD_INFORMATION.getValue());
@@ -89,6 +108,10 @@ public class Login {
         return outPacket;
     }
 
+    /**
+     * Lets the client know that the world information has ended.
+     * @return The OutPacket containing the world information.
+     */
     public static OutPacket sendWorldInformationEnd() {
         OutPacket outPacket = new OutPacket(OutHeader.WORLD_INFORMATION);
 
@@ -97,6 +120,10 @@ public class Login {
         return outPacket;
     }
 
+    /**
+     * Sends the server status to the client. This is called when the client clicks on a world in the world selection.
+     * @return The OutPacket containing the server status.
+     */
     public static OutPacket sendServerStatus() {
         OutPacket outPacket = new OutPacket(OutHeader.SERVER_STATUS.getValue());
         outPacket.encodeByte(0); // TODO: Implement Server Status (0 = Normal, 1 = Highly populated, 2 = Full)
