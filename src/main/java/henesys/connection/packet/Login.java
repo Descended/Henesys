@@ -97,6 +97,13 @@ public class Login {
         return outPacket;
     }
 
+    public static OutPacket sendServerStatus() {
+        OutPacket outPacket = new OutPacket(OutHeader.SERVER_STATUS.getValue());
+        outPacket.encodeByte(0); // TODO: Implement Server Status (0 = Normal, 1 = Highly populated, 2 = Full)
+        outPacket.encodeByte(0);
+        return outPacket;
+    }
+
     public static OutPacket sendAliveReq() {
         return new OutPacket(OutHeader.ALIVE_REQ.getValue());
     }

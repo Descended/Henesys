@@ -45,4 +45,10 @@ public class LoginHandler {
         }
         c.write(Login.sendWorldInformationEnd());
     }
+
+    @Handler(op = InHeader.WORLD_STATUS_REQUEST)
+    public static void handleWorldStatusRequest(Client c, InPacket inPacket) {
+        byte worldId = inPacket.decodeByte();
+        c.write(Login.sendServerStatus());
+    }
 }
