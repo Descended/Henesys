@@ -13,4 +13,5 @@ public class ServerConfig {
     public static final List<World> WORLDS = List.of(new World[]{
             new World(0, "Henesys", 0, "Henesys", 1, 1, 1, 3, 1, 1, 1),
     });
+    public static final boolean AUTO_REGISTER = true;
 }

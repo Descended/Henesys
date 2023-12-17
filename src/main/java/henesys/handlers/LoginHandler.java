@@ -1,8 +1,10 @@
 package henesys.handlers;
 
 import henesys.Server;
+import henesys.ServerConfig;
 import henesys.client.Client;
 import henesys.client.User;
+import henesys.client.dao.UserDao;
 import henesys.connection.InPacket;
 import henesys.connection.packet.Login;
 import henesys.enums.LoginType;
@@ -15,10 +17,25 @@ public class LoginHandler {
     public static void handleCheckPassword(Client c, InPacket inPacket) {
         String username = inPacket.decodeString();
         String password = inPacket.decodeString();
-        c.setUser(new User(username, password));
-        c.write(Login.checkPasswordResult(LoginType.Success, c.getUser()));
-
-        // TODO: Decode machineID
+        UserDao userDao = new UserDao();
+        User user = userDao.findByUsername(username);
+        if (user == null) {
+            if (ServerConfig.AUTO_REGISTER) {
+                user = new User(username, password);
+                userDao.registerUser(user);
+                c.setUser(user);
+                c.write(Login.checkPasswordResult(LoginType.Success, user));
+            } else {
+                c.write(Login.checkPasswordResult(LoginType.NotRegistered, null));
+            }
+        } else {
+            if (!user.getPassword().equals(password)) {
+                c.write(Login.checkPasswordResult(LoginType.IncorrectPassword, null));
+                return;
+            }
+            c.setUser(user);
+            c.write(Login.checkPasswordResult(LoginType.Success, c.getUser()));
+        }
     }
 
     @Handler(op = InHeader.WORLD_REQUEST)

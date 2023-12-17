@@ -38,12 +38,12 @@ public class Login {
             outPacket.encodeInt(user.getId());
             outPacket.encodeByte(user.getGender());
             outPacket.encodeByte(user.getAccountMode());
-            outPacket.encodeShort(user.getAccountType().getVal());
+            outPacket.encodeShort(user.getUserType().getVal());
             outPacket.encodeByte(0); // nCountryId
-            outPacket.encodeString(user.getName());
-            outPacket.encodeByte(user.getPurchaseExp());
+            outPacket.encodeString(user.getUsername());
+            outPacket.encodeByte(0); // nPurchaseExp
             outPacket.encodeByte(0); // Chat Unblock Reason
-            outPacket.encodeLong(user.getChatUnblockDate());
+            outPacket.encodeLong(0); // Chat Unblock Date
             outPacket.encodeLong(0); // dtRegisterDate
             outPacket.encodeInt(user.getCharacterSlots());
             outPacket.encodeByte(1); // v44
@@ -51,6 +51,8 @@ public class Login {
             outPacket.encodeLong(0);
         } else if (loginType == LoginType.Blocked) {
             // TODO: Implement Blocked LoginType
+        } else {
+            //
         }
 
         return outPacket;

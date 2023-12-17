@@ -20,7 +20,6 @@ public class Account {
     private int worldId;
 
     private Set<Char> characters = new HashSet<>();
-    // nxCredit is from mobs, so is account (world) specific.
     private int nxCredit;
     private User user;
     private Char currentChr;

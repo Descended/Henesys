@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 
 import static henesys.connection.netty.NettyClient.CLIENT_KEY;
 

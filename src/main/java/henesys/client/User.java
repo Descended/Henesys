@@ -2,12 +2,12 @@ package henesys.client;
 
 import henesys.ServerConfig;
 import henesys.client.character.Char;
-import henesys.enums.AccountType;
+import henesys.enums.UserType;
 import henesys.enums.PicStatus;
-import henesys.util.FileTime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,42 +22,35 @@ public class User {
     private static final Logger log = LogManager.getLogger(Account.class);
 
     private int id;
-    private String name;
+    private String username;
+
+    private String email;
     private String password;
     private String pic;
-    private AccountType accountType;
+    private UserType userType;
     private int votePoints;
     private int donationPoints;
-    private int age;
-    private int vipGrade;
-    private int nBlockReason;
     private byte gender;
     private byte accountMode;
-    private byte purchaseExp;
-    private byte pBlockReason;
-    private byte gradeCode;
-    private long chatUnblockDate;
-    private boolean hasCensoredNxLoginID;
-    private String censoredNxLoginID;
     private int characterSlots;
-    private FileTime creationDate;
     private int maplePoints;
     private int nxPrepaid;
 
     private Set<Account> accounts;
-    private FileTime banExpireDate = FileTime.fromType(FileTime.Type.ZERO_TIME);
+    private Date banExpireDate;
     private String banReason;
     private Char currentChr;
     private Account currentAcc;
+    private Date birthDate;
+    private int offensePoints;
 
     public User() {
     }
 
-    public User(String name, String password) {
-        this.name = name;
+    public User(String username, String password) {
+        this.username = username;
         this.password = password;
-        this.accountType = AccountType.Player;
-        this.creationDate = FileTime.currentTime();
+        this.userType = UserType.Player;
         this.accounts = new HashSet<>();
         this.characterSlots = ServerConfig.MAX_CHARACTERS;
     }
@@ -74,12 +67,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -90,48 +83,24 @@ public class User {
         this.password = password;
     }
 
-    public AccountType getAccountType() {
-        return accountType;
+    public UserType getUserType() {
+        return userType;
     }
 
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public int getVipGrade() {
-        return vipGrade;
-    }
-
-    public void setVipGrade(int vipGrade) {
-        this.vipGrade = vipGrade;
-    }
-
-    public int getnBlockReason() {
-        return nBlockReason;
-    }
-
-    public void setnBlockReason(int nBlockReason) {
-        this.nBlockReason = nBlockReason;
-    }
-
-    public FileTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(FileTime creationDate) {
-        this.creationDate = creationDate;
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public Char getCurrentChr() {
         return currentChr;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public void setCurrentChr(Char currentChr) {
@@ -172,6 +141,14 @@ public class User {
         }
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void deductNXPrepaid(int prepaid) {
         addNXPrepaid(-prepaid);
     }
@@ -188,13 +165,6 @@ public class User {
         getAccounts().add(account);
     }
 
-    public FileTime getBanExpireDate() {
-        return banExpireDate;
-    }
-
-    public void setBanExpireDate(FileTime banExpireDate) {
-        this.banExpireDate = banExpireDate;
-    }
 
     public String getBanReason() {
         return banReason;
@@ -247,52 +217,13 @@ public class User {
         this.accountMode = accountMode;
     }
 
-    public byte getPurchaseExp() {
-        return purchaseExp;
+
+    public Date getBanExpireDate() {
+        return banExpireDate;
     }
 
-    public void setPurchaseExp(byte purchaseExp) {
-        this.purchaseExp = purchaseExp;
-    }
-
-    public byte getpBlockReason() {
-        return pBlockReason;
-    }
-
-    public void setpBlockReason(byte pBlockReason) {
-        this.pBlockReason = pBlockReason;
-    }
-
-    public byte getGradeCode() {
-        return gradeCode;
-    }
-
-    public void setGradeCode(byte gradeCode) {
-        this.gradeCode = gradeCode;
-    }
-
-    public long getChatUnblockDate() {
-        return chatUnblockDate;
-    }
-
-    public void setChatUnblockDate(long chatUnblockDate) {
-        this.chatUnblockDate = chatUnblockDate;
-    }
-
-    public boolean hasCensoredNxLoginID() {
-        return hasCensoredNxLoginID;
-    }
-
-    public void setHasCensoredNxLoginID(boolean hasCensoredNxLoginID) {
-        this.hasCensoredNxLoginID = hasCensoredNxLoginID;
-    }
-
-    public String getCensoredNxLoginID() {
-        return censoredNxLoginID;
-    }
-
-    public void setCensoredNxLoginID(String censoredNxLoginID) {
-        this.censoredNxLoginID = censoredNxLoginID;
+    public void setBanExpireDate(Date banExpireDate) {
+        this.banExpireDate = banExpireDate;
     }
 
     public int getCharacterSlots() {
@@ -336,6 +267,14 @@ public class User {
         setDonationPoints(getDonationPoints() + amount);
     }
 
+    public int getOffensePoints() {
+        return offensePoints;
+    }
+
+    public void setOffensePoints(int offensePoints) {
+        this.offensePoints = offensePoints;
+    }
+
     public void unstuck() {
         // TODO: implement
     }
@@ -344,7 +283,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + username + '\'' +
                 ", currentChr=" + currentChr +
                 ", currentAcc=" + currentAcc +
                 '}';
