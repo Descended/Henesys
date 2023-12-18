@@ -45,6 +45,7 @@ public class User {
     private int offensePoints;
 
     public User() {
+        this.accounts = new HashSet<>();
     }
 
     public User(String username, String password) {

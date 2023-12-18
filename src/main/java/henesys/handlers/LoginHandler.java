@@ -3,14 +3,18 @@ package henesys.handlers;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import henesys.Server;
 import henesys.ServerConfig;
+import henesys.client.Account;
 import henesys.client.Client;
 import henesys.client.User;
+import henesys.client.dao.AccountDao;
 import henesys.client.dao.UserDao;
 import henesys.connection.InPacket;
 import henesys.connection.packet.Login;
 import henesys.enums.LoginType;
 import henesys.handlers.header.InHeader;
 import henesys.world.World;
+
+import java.util.Set;
 
 public class LoginHandler {
 
@@ -52,5 +56,24 @@ public class LoginHandler {
     public static void handleWorldStatusRequest(Client c, InPacket inPacket) {
         byte worldId = inPacket.decodeByte();
         c.write(Login.sendServerStatus());
+    }
+
+    @Handler(op = InHeader.SELECT_WORLD)
+    public static void handleSelectWorld(Client c, InPacket inPacket) {
+        byte unk = inPacket.decodeByte();
+        byte worldId = inPacket.decodeByte();
+        byte channel = (byte) (inPacket.decodeByte() + 1);
+        User user = c.getUser();
+        c.setWorldId(worldId);
+        c.setChannel(channel);
+        AccountDao accountDao = new AccountDao();
+        Account account = accountDao.findByUserAndWorld(user, worldId);
+        if (account == null) {
+            account = new Account();
+            account.setWorldId(worldId);
+            user.addAccount(account);
+            account.setUser(user);
+        }
+        c.write(Login.selectWorldResult(user, account));
     }
 }

@@ -1,7 +1,9 @@
 package henesys.connection.packet;
 
 import henesys.ServerConstants;
+import henesys.client.Account;
 import henesys.client.User;
+import henesys.client.character.Char;
 import henesys.connection.OutPacket;
 import henesys.enums.LoginType;
 import henesys.handlers.header.OutHeader;
@@ -10,6 +12,8 @@ import henesys.util.container.Tuple;
 import henesys.world.Channel;
 import henesys.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -128,6 +132,31 @@ public class Login {
         OutPacket outPacket = new OutPacket(OutHeader.SERVER_STATUS.getValue());
         outPacket.encodeByte(0); // TODO: Implement Server Status (0 = Normal, 1 = Highly populated, 2 = Full)
         outPacket.encodeByte(0);
+        return outPacket;
+    }
+
+    public static OutPacket selectWorldResult(User user, Account account) {
+        OutPacket outPacket = new OutPacket(OutHeader.SELECT_WORLD_RESULT.getValue());
+        outPacket.encodeByte(0); // status/nSuccess
+        List<Char> chars = new ArrayList<>();
+        outPacket.encodeByte(chars.size());
+        for (Char chr : chars) {
+            chr.getCharacterStat().encode(outPacket);
+            chr.getAvatarLook().encode(outPacket);
+            outPacket.encodeByte(false); // family stuff, deprecated
+            boolean hasRanking = false;
+            outPacket.encodeByte(hasRanking);
+            if (hasRanking) {
+                outPacket.encodeInt(0); // world rank
+                outPacket.encodeInt(0); // getTotRankGap
+                outPacket.encodeInt(0); // Job Rank
+                outPacket.encodeInt(0); // gap
+            }
+        }
+        outPacket.encodeByte(user.getPicStatus().getVal()); // bLoginOpt
+        outPacket.encodeInt(user.getCharacterSlots());
+        outPacket.encodeInt(0); // Buying char slots (m_nBuyCharCount)
+
         return outPacket;
     }
 

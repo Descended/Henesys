@@ -1,5 +1,7 @@
 package henesys.client.character;
 
+import henesys.client.character.avatar.AvatarLook;
+
 public class Char {
 
     private String name;
@@ -9,6 +11,10 @@ public class Char {
     private boolean changingChannel;
 
     private boolean inCashShop;
+
+    private AvatarLook avatarLook;
+
+    private CharacterStat characterStat;
 
 
     public int getId() {
@@ -37,6 +43,22 @@ public class Char {
 
     public void setInCashShop(boolean inCashShop) {
         this.inCashShop = inCashShop;
+    }
+
+    public AvatarLook getAvatarLook() {
+        return avatarLook;
+    }
+
+    public void setAvatarLook(AvatarLook avatarLook) {
+        this.avatarLook = avatarLook;
+    }
+
+    public CharacterStat getCharacterStat() {
+        return characterStat;
+    }
+
+    public void setCharacterStat(CharacterStat characterStat) {
+        this.characterStat = characterStat;
     }
 
     public void logout() {

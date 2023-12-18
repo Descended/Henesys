@@ -34,6 +34,7 @@ public class UserDao {
                 user.setMaplePoints(rs.getInt("maplePoints"));
                 user.setUserType(UserType.getByVal(rs.getInt("userType")));
                 user.setBirthDate(rs.getDate("birthDate"));
+                user.setCharacterSlots(rs.getInt("characterSlots"));
             }
             return user;
         } catch (SQLException e) {
@@ -42,7 +43,7 @@ public class UserDao {
     }
     public void registerUser(User user) {
         String sql = "INSERT INTO user (username, email, password, pic, banExpireDate, banReason, offensePoints, " +
-                "nxPrepaid, votePoints, donationPoints, maplePoints, userType, birthDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "nxPrepaid, votePoints, donationPoints, maplePoints, userType, birthDate, characterSlots) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -59,6 +60,7 @@ public class UserDao {
             statement.setInt(11, user.getMaplePoints());
             statement.setInt(12, user.getUserType().getVal());
             statement.setDate(13, user.getBirthDate());
+            statement.setInt(14, user.getCharacterSlots());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
