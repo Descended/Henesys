@@ -3,7 +3,8 @@ package henesys;
 public class ServerConstants {
 
     public static final String DIR = System.getProperty("user.dir");
-
+    public static final String WZ_DIR = DIR + "/WZ";
+    public static final String DAT_DIR = DIR + "/dat";
     public static final String SCRIPT_DIR = DIR + "/scripts";
     public static final String RESOURCES_DIR = DIR + "/resources";
     public static final String HANDLERS_DIR = DIR + "/src/main/java/henesys/handlers";
