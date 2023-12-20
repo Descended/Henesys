@@ -1,7 +1,9 @@
 package henesys.constants;
 
 import henesys.items.BodyPart;
+import henesys.items.Equip;
 import henesys.items.EquipPrefix;
+import henesys.loaders.ItemData;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
@@ -11,10 +13,30 @@ import static henesys.items.BodyPart.*;
 
 public class ItemConstants {
 
+    public static final byte MAX_SKIN = 13;
+    public static final int MIN_HAIR = 30000;
+    public static final int MAX_HAIR = 49999;
+    public static final int MIN_FACE = 20000;
+    public static final int MAX_FACE = 29999;
+
+    public static final int RAND_CHAOS_MAX = 5;
+    public static final int INC_RAND_CHAOS_MAX = 10;
+
+    public static final int EMPTY_SOCKET_ID = 3;
+    public static final int NEBILITE_BASE_ID = 3060000;
+
+    public static final int THIRD_LINE_CHANCE = 50;
+    public static final short MAX_HAMMER_SLOTS = 2;
+
+    public static final int CONSUMABLE_MAX_STACK_AMOUNT = 5000;
+
     static final org.apache.logging.log4j.Logger log = LogManager.getRootLogger();
     public static int getBodyPartFromItem(int nItemID, int gender) {
         List<Integer> arr = getBodyPartArrayFromItem(nItemID, gender);
         return (!arr.isEmpty()) ? arr.getFirst() : 0;
+    }
+    public static boolean isEquip(int id) {
+        return id / 1000000 == 1;
     }
 
     public static List<Integer> getBodyPartArrayFromItem(int itemID, int genderArg) {
@@ -154,11 +176,127 @@ public class ItemConstants {
         }
         return result;
     }
-
     private static int getItemPrefix(int nItemID) {
         return nItemID / 10000;
     }
+
+    public static boolean isThrowingStar(int itemID) {
+        return getItemPrefix(itemID) == 207;
+    }
+
+    public static boolean isBullet(int itemID) {
+        return getItemPrefix(itemID) == 233;
+    }
+
+    public static boolean canEquipHavePotential(Equip equip) {
+        return !equip.isCash() &&
+                canEquipTypeHavePotential(equip.getItemId()) &&
+                (ItemData.getEquipById(equip.getItemId()).getTuc() >= 1);
+    }
+
+    public static boolean canEquipTypeHavePotential(int itemid) {
+        return isRing(itemid) ||
+                isPendant(itemid) ||
+                isWeapon(itemid) ||
+                isBelt(itemid) ||
+                isHat(itemid) ||
+                isFaceAccessory(itemid) ||
+                isEyeAccessory(itemid) ||
+                isOverall(itemid) ||
+                isTop(itemid) ||
+                isBottom(itemid) ||
+                isShoe(itemid) ||
+                isEarrings(itemid) ||
+                isShoulder(itemid) ||
+                isGlove(itemid) ||
+                isShield(itemid) ||
+                isCape(itemid) ||
+                isMechanicalHeart(itemid);
+    }
+
+    public static boolean isPendant(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Pendant.getVal();
+    }
+
+    public static boolean isBelt(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Belt.getVal();
+    }
+    public static boolean isHat(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Hat.getVal();
+    }
+    public static boolean isShoulder(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Shoulder.getVal();
+    }
+
+    public static boolean isMechanicalHeart(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.MechanicalHeart.getVal();
+    }
     public static boolean isWeapon(int itemID) {
         return itemID >= 1210000 && itemID < 1600000 || itemID / 10000 == 170;
+    }
+
+    public static boolean isSecondary(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.SecondaryWeapon.getVal();
+    }
+
+    public static boolean isShield(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Shield.getVal();
+    }
+
+    public static boolean isAccessory(int itemID) {
+        return (itemID >= 1010000 && itemID < 1040000) || (itemID >= 1122000 && itemID < 1153000) ||
+                (itemID >= 1112000 && itemID < 1113000) || (itemID >= 1670000 && itemID < 1680000);
+    }
+
+    public static boolean isFaceAccessory(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.FaceAccessory.getVal();
+    }
+
+    public static boolean isEyeAccessory(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.EyeAccessory.getVal();
+    }
+
+    public static boolean isEarrings(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Earrings.getVal();
+    }
+
+    public static boolean isTop(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Top.getVal();
+    }
+
+    public static boolean isOverall(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Overall.getVal();
+    }
+
+    public static boolean isBottom(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Bottom.getVal();
+    }
+
+    public static boolean isShoe(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Shoes.getVal();
+    }
+
+    public static boolean isGlove(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Gloves.getVal();
+    }
+
+    public static boolean isCape(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Cape.getVal();
+    }
+
+    public static boolean isArmor(int itemID) {
+        return !isAccessory(itemID) && !isWeapon(itemID) && !isMechanicalHeart(itemID);
+    }
+
+    public static boolean isRing(int itemID) {
+        return getItemPrefix(itemID) == EquipPrefix.Ring.getVal();
+    }
+
+    public static boolean isPet(int itemId) {
+        return getItemPrefix(itemId) == 500;
+    }
+
+    public static boolean isConsumable(int itemId) {
+        return itemId > 2020000 && itemId < 2050000;
     }
 }

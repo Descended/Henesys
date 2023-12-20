@@ -45,10 +45,6 @@ public enum DBChar {
         return uFlag;
     }
 
-    public boolean isInMask(long mask) {
-        return (mask & get()) != 0;
-    }
-
     public boolean isInMask(DBChar mask) {
         return (mask.get() & get()) != 0;
     }

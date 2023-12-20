@@ -6,6 +6,7 @@ import henesys.constants.ItemConstants;
 import henesys.enums.*;
 import henesys.items.Equip;
 import henesys.items.Item;
+import henesys.items.ItemSkill;
 import henesys.items.PetItem;
 import henesys.items.container.ItemInfo;
 import henesys.items.container.ItemRewardInfo;
@@ -140,6 +141,11 @@ public class ItemData {
                 options.add(0);
             }
             equip.setOptions(options);
+            short skillsLength = dataInputStream.readShort();
+            for (int i = 0; i < skillsLength; i++) {
+                equip.addItemSkill(new ItemSkill(dataInputStream.readInt(), dataInputStream.readByte()));
+            }
+            equip.setOptions(options);
             equip.setFixedGrade(dataInputStream.readInt());
             equip.setSpecialGrade(dataInputStream.readInt());
             equips.put(equip.getItemId(), equip);
@@ -202,6 +208,12 @@ public class ItemData {
                 dataOutputStream.writeShort(equip.getOptions().size());
                 for (int i : equip.getOptions()) {
                     dataOutputStream.writeInt(i);
+                }
+
+                dataOutputStream.writeShort(equip.getItemSkills().size());
+                for (ItemSkill skill : equip.getItemSkills()) {
+                    dataOutputStream.writeInt(skill.getSkill());
+                    dataOutputStream.writeByte(skill.getSlv());
                 }
                 dataOutputStream.writeInt(equip.getFixedGrade());
                 dataOutputStream.writeInt(equip.getSpecialGrade());
@@ -1083,8 +1095,6 @@ public class ItemData {
                                 case "towerBottom":
                                 case "towerTop":
                                 case "topOffset":
-                                case "craftEXP":
-                                case "willEXP":
                                     break;
                                 case "tradeBlock":
                                     item.setTradeBlock(intValue != 0);
