@@ -169,7 +169,7 @@ public class CharacterStat {
         return intt;
     }
 
-    public void setIntt(short intt) {
+    public void setInt(short intt) {
         this.intt = intt;
     }
 

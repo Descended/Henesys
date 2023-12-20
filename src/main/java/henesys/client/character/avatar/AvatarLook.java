@@ -3,6 +3,7 @@ package henesys.client.character.avatar;
 import henesys.connection.OutPacket;
 import henesys.constants.ItemConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AvatarLook {
@@ -21,6 +22,13 @@ public class AvatarLook {
     private List<Integer> unseenEquips;
 
     private List<Integer> petIDs;
+
+    public AvatarLook(int characterId) {
+        this.characterId = characterId;
+        this.hairEquips = new ArrayList<>();
+        this.unseenEquips = new ArrayList<>();
+        this.petIDs = new ArrayList<>();
+    }
 
     public void encode(OutPacket outPacket) {
         outPacket.encodeByte(getGender());

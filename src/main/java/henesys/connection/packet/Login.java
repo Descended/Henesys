@@ -164,4 +164,27 @@ public class Login {
         return new OutPacket(OutHeader.ALIVE_REQ.getValue());
     }
 
+    public static OutPacket checkDuplicatedIDResult(String name, byte code) {
+        OutPacket outPacket = new OutPacket(OutHeader.CHECK_DUPLICATED_ID_RESULT);
+
+        outPacket.encodeString(name);
+        outPacket.encodeByte(code);
+
+        return outPacket;
+    }
+
+    public static OutPacket createNewCharacterResult(LoginType type, Char chr) {
+        OutPacket outPacket = new OutPacket(OutHeader.CREATE_NEW_CHARACTER_RESULT);
+
+        outPacket.encodeByte(type.getValue());
+        if (type == LoginType.Success) {
+            chr.getCharacterStat().encode(outPacket);
+            chr.getAvatarLook().encode(outPacket);
+
+            outPacket.encodeByte(false);
+            outPacket.encodeByte(false);
+        }
+
+        return outPacket;
+    }
 }
