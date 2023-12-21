@@ -35,6 +35,14 @@ public class CharacterStat {
 
     private ExtendSP extendSP;
 
+    public CharacterStat(String name, byte gender, byte skin, int face, int hair) {
+        this.name = name;
+        this.gender = gender;
+        this.skin = skin;
+        this.face = face;
+        this.hair = hair;
+    }
+
     public void encode(OutPacket outPacket) {
         outPacket.encodeInt(getCharacterId());
         outPacket.encodeString(getName(), 13);

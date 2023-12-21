@@ -20,21 +20,11 @@ public class Char {
     private boolean talkingToNpc;
     private Client client;
 
-    public Char(String name, int accountId, int job, short subJob, byte gender, byte skin, int face, int hair, int[] items) {
+    public Char(int id, CharacterStat cs, int accountId, AvatarLook avatarLook) {
+        this.id = id;
         this.accountId = accountId;
-        this.id = 1;
-        this.characterStat = new CharacterStat();
-        this.characterStat.setCharacterId(this.id);
-        this.characterStat.setName(name);
-        this.characterStat.setJob((short) job);
-        this.characterStat.setSubJob(subJob);
-        this.avatarLook = new AvatarLook(this.id);
-        this.avatarLook.setGender(gender);
-        this.avatarLook.setSkin(skin);
-        this.avatarLook.setFace(face);
-        this.avatarLook.setHair(hair);
-
-
+        this.characterStat = cs;
+        this.avatarLook = avatarLook;
     }
 
     public int getId() {

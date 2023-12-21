@@ -4,10 +4,7 @@ import henesys.client.Account;
 import henesys.client.User;
 import henesys.connection.db.DatabaseManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class AccountDao {
 
@@ -31,5 +28,24 @@ public class AccountDao {
             throw new RuntimeException(e);
         }
         return account;
+    }
+
+    public int createAccount(Account account, int userId, int worldId, int trunkId) {
+        String sql = "INSERT INTO account (worldId, userId, trunkId, nxCredit) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, worldId);
+            statement.setInt(2, userId);
+            statement.setInt(3, trunkId);
+            statement.setInt(4, account.getNxCredit());
+            statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
     }
 }

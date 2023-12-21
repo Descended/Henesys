@@ -23,8 +23,12 @@ public class AvatarLook {
 
     private List<Integer> petIDs;
 
-    public AvatarLook(int characterId) {
-        this.characterId = characterId;
+    public AvatarLook(int gender, int skin, int face, int hair, int weaponId) {
+        this.gender = gender;
+        this.skin = skin;
+        this.face = face;
+        this.hair = hair;
+        this.weaponId = weaponId;
         this.hairEquips = new ArrayList<>();
         this.unseenEquips = new ArrayList<>();
         this.petIDs = new ArrayList<>();
@@ -70,16 +74,16 @@ public class AvatarLook {
         this.petIDs = petIDs;
     }
 
-    public int getGender() {
-        return gender;
+    public byte getGender() {
+        return (byte) gender;
     }
 
     public void setGender(int gender) {
         this.gender = gender;
     }
 
-    public int getSkin() {
-        return skin;
+    public byte getSkin() {
+        return (byte) skin;
     }
 
     public void setSkin(int skin) {

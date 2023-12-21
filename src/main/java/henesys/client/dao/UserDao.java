@@ -4,10 +4,7 @@ import henesys.client.User;
 import henesys.connection.db.DatabaseManager;
 import henesys.enums.UserType;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserDao {
 
@@ -15,7 +12,7 @@ public class UserDao {
         String sql = "SELECT * FROM user WHERE username = ?";
         User user = null;
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -41,12 +38,12 @@ public class UserDao {
             throw new RuntimeException(e);
         }
     }
-    public void registerUser(User user) {
+    public int registerUser(User user) {
         String sql = "INSERT INTO user (username, email, password, pic, banExpireDate, banReason, offensePoints, " +
                 "nxPrepaid, votePoints, donationPoints, maplePoints, userType, birthDate, characterSlots) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPassword());
@@ -62,8 +59,13 @@ public class UserDao {
             statement.setDate(13, user.getBirthDate());
             statement.setInt(14, user.getCharacterSlots());
             statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return 0;
     }
 }

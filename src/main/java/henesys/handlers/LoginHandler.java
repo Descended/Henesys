@@ -5,12 +5,12 @@ import henesys.Server;
 import henesys.ServerConfig;
 import henesys.client.Account;
 import henesys.client.Client;
+import henesys.client.Trunk;
 import henesys.client.User;
 import henesys.client.character.Char;
 import henesys.client.character.CharacterStat;
-import henesys.client.dao.AccountDao;
-import henesys.client.dao.CharacterStatDao;
-import henesys.client.dao.UserDao;
+import henesys.client.character.avatar.AvatarLook;
+import henesys.client.dao.*;
 import henesys.connection.InPacket;
 import henesys.connection.packet.Login;
 import henesys.constants.GameConstants;
@@ -34,7 +34,8 @@ public class LoginHandler {
             if (ServerConfig.AUTO_REGISTER) {
                 String encryptedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
                 user = new User(username, encryptedPassword);
-                userDao.registerUser(user);
+                int userId = userDao.registerUser(user);
+                user.setId(userId);
                 c.setUser(user);
                 c.write(Login.checkPasswordResult(LoginType.Success, user));
             } else {
@@ -77,6 +78,11 @@ public class LoginHandler {
         if (account == null) {
             account = new Account();
             account.setWorldId(worldId);
+            TrunkDao trunkDao = new TrunkDao();
+            int trunkId = trunkDao.createTrunk(new Trunk(GameConstants.TRUNK_SLOT_COUNT, 0));
+            AccountDao dao = new AccountDao();
+            int accountId = dao.createAccount(account, user.getId(), worldId, trunkId);
+            account.setId(accountId);
             user.addAccount(account);
             account.setUser(user);
         }
@@ -134,10 +140,8 @@ public class LoginHandler {
             c.write(Login.checkDuplicatedIDResult(name, code.getVal()));
             return;
         }
-        c.getUser().setCurrentAcc(acc);
         int finalHair = hair + hairColor;
-        Char chr = new Char(name, acc.getId(), job, subJob, gender, (byte) skin, face, hair, items);
-        CharacterStat characterStat = chr.getCharacterStat();
+        CharacterStat characterStat = new CharacterStat(name, gender, (byte) skin, face, hair);
         characterStat.setLevel((byte) 1);
         characterStat.setStr((short) 4);
         characterStat.setDex((short) 4);
@@ -147,6 +151,16 @@ public class LoginHandler {
         characterStat.setMaxHp(50);
         characterStat.setMp(5);
         characterStat.setMaxMp(5);
+        characterStatDao = new CharacterStatDao();
+        int characterStatId = characterStatDao.createCharStat(characterStat);
+        AvatarLook avatarLook = new AvatarLook(gender, skin, face, hair, weapon);
+        AvatarLookDao avatarLookDao = new AvatarLookDao();
+        int avatarLookId = avatarLookDao.createAvatarLook(avatarLook);
+        CharDao charDao = new CharDao();
+        int characterId = charDao.createCharacter(acc.getId(), characterStatId, avatarLookId);
+        Char chr = new Char(characterId, characterStat, acc.getId(), avatarLook);
+        characterStat.setCharacterId(characterId);
+        c.getAccount().addCharacter(chr);
         c.write(Login.createNewCharacterResult(LoginType.Success, chr));
     }
 
