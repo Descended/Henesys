@@ -4,6 +4,9 @@ import henesys.ServerConstants;
 import henesys.client.Account;
 import henesys.client.User;
 import henesys.client.character.Char;
+import henesys.client.dao.AvatarLookDao;
+import henesys.client.dao.CharDao;
+import henesys.client.dao.CharacterStatDao;
 import henesys.connection.OutPacket;
 import henesys.enums.LoginType;
 import henesys.handlers.header.OutHeader;
@@ -138,10 +141,15 @@ public class Login {
     public static OutPacket selectWorldResult(User user, Account account) {
         OutPacket outPacket = new OutPacket(OutHeader.SELECT_WORLD_RESULT.getValue());
         outPacket.encodeByte(0); // status/nSuccess
-        List<Char> chars = new ArrayList<>();
+        CharDao charDao = new CharDao();
+        CharacterStatDao characterStatDao = new CharacterStatDao();
+        AvatarLookDao avatarLookDao = new AvatarLookDao();
+        List<Char> chars = charDao.getCharsByAccountId(account.getId());
         outPacket.encodeByte(chars.size());
         for (Char chr : chars) {
+            chr.setCharacterStat(characterStatDao.findById(chr.getId(), chr.getCharacterStatId()));
             chr.getCharacterStat().encode(outPacket);
+            chr.setAvatarLook(avatarLookDao.findById(chr.getId(), chr.getAvatarLookId()));
             chr.getAvatarLook().encode(outPacket);
             outPacket.encodeByte(false); // family stuff, deprecated
             boolean hasRanking = false;

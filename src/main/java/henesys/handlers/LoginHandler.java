@@ -97,8 +97,8 @@ public class LoginHandler {
         if (!GameConstants.isValidName(name)) {
             code = CharNameResult.Unavailable_Invalid;
         } else {
-//            code = CharDao.getFromDBByNameAndWorld(name, c.getAccount().getWorldId()) == null ? CharNameResult.Available : CharNameResult.Unavailable_InUse;
-            code = CharNameResult.Available;
+            CharacterStatDao characterStatDao = new CharacterStatDao();
+            code = characterStatDao.characterExists(name) ? CharNameResult.Unavailable_InUse : CharNameResult.Available;
         }
         c.write(Login.checkDuplicatedIDResult(name, code.getVal()));
     }

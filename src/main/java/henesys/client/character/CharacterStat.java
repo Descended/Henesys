@@ -35,6 +35,10 @@ public class CharacterStat {
 
     private ExtendSP extendSP;
 
+
+    public CharacterStat() {
+    }
+
     public CharacterStat(String name, byte gender, byte skin, int face, int hair) {
         this.name = name;
         this.gender = gender;
@@ -291,5 +295,17 @@ public class CharacterStat {
 
     public void setSubJob(short subJob) {
         this.subJob = subJob;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setIntt(short intt) {
+        this.intt = intt;
     }
 }

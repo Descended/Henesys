@@ -26,4 +26,26 @@ public class AvatarLookDao {
         }
         return 0;
     }
+
+    public AvatarLook findById(int characterId, int id) {
+        String sql = "SELECT * FROM avatarLook WHERE id = ?";
+        AvatarLook avatarLook = new AvatarLook();
+        avatarLook.setCharacterId(characterId);
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                avatarLook.setId(rs.getInt("id"));
+                avatarLook.setGender(rs.getInt("gender"));
+                avatarLook.setSkin(rs.getInt("skin"));
+                avatarLook.setFace(rs.getInt("face"));
+                avatarLook.setHair(rs.getInt("hair"));
+                avatarLook.setWeaponId(rs.getInt("weaponId"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return avatarLook;
+    }
 }

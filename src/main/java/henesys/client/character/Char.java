@@ -10,8 +10,11 @@ import henesys.items.Item;
 public class Char {
 
     private int id;
-    private final int accountId;
+    private int accountId;
     private boolean changingChannel;
+
+    private int characterStatId;
+    private int avatarLookId;
 
     private boolean inCashShop;
     private AvatarLook avatarLook;
@@ -19,6 +22,9 @@ public class Char {
 
     private boolean talkingToNpc;
     private Client client;
+
+    public Char() {
+    }
 
     public Char(int id, CharacterStat cs, int accountId, AvatarLook avatarLook) {
         this.id = id;
@@ -156,4 +162,31 @@ public class Char {
         getClient().write(UserLocal.chatMsg(clr, msg));
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public int getCharacterStatId() {
+        return characterStatId;
+    }
+
+    public void setCharacterStatId(int characterStatId) {
+        this.characterStatId = characterStatId;
+    }
+
+    public int getAvatarLookId() {
+        return avatarLookId;
+    }
+
+    public void setAvatarLookId(int avatarLookId) {
+        this.avatarLookId = avatarLookId;
+    }
 }

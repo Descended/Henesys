@@ -23,6 +23,12 @@ public class AvatarLook {
 
     private List<Integer> petIDs;
 
+    public AvatarLook() {
+        this.hairEquips = new ArrayList<>();
+        this.unseenEquips = new ArrayList<>();
+        this.petIDs = new ArrayList<>();
+    }
+
     public AvatarLook(int gender, int skin, int face, int hair, int weaponId) {
         this.gender = gender;
         this.skin = skin;
@@ -128,5 +134,21 @@ public class AvatarLook {
 
     public void setUnseenEquips(List<Integer> unseenEquips) {
         this.unseenEquips = unseenEquips;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCharacterId() {
+        return characterId;
+    }
+
+    public void setCharacterId(int characterId) {
+        this.characterId = characterId;
     }
 }
