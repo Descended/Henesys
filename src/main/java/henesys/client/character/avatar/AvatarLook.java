@@ -2,6 +2,8 @@ package henesys.client.character.avatar;
 
 import henesys.connection.OutPacket;
 import henesys.constants.ItemConstants;
+import henesys.items.Equip;
+import henesys.loaders.ItemData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,7 @@ public class AvatarLook {
         this.petIDs = new ArrayList<>();
     }
 
-    public AvatarLook(int gender, int skin, int face, int hair, int weaponId) {
+    public AvatarLook(int gender, int skin, int face, int hair, int weaponId, int[] items) {
         this.gender = gender;
         this.skin = skin;
         this.face = face;
@@ -38,6 +40,15 @@ public class AvatarLook {
         this.hairEquips = new ArrayList<>();
         this.unseenEquips = new ArrayList<>();
         this.petIDs = new ArrayList<>();
+        for (int itemId : items) {
+            Equip equip = ItemData.getEquipDeepCopyFromID(itemId, false);
+            if (equip != null && ItemConstants.isEquip(itemId)) {
+                hairEquips.add(itemId);
+                if ("Wp".equals(equip.getiSlot())) {
+                    setWeaponId(itemId);
+                }
+            }
+        }
     }
 
     public void encode(OutPacket outPacket) {

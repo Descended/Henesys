@@ -4,6 +4,8 @@ import henesys.client.character.avatar.AvatarLook;
 import henesys.connection.db.DatabaseManager;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AvatarLookDao {
 
@@ -27,6 +29,36 @@ public class AvatarLookDao {
         return 0;
     }
 
+    public void saveEquips(int avatarLookId, List<Integer> equips) {
+        String sql = "INSERT INTO hairEquip (avatarLookId, equipId) VALUES (?, ?)";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            for (int equipId : equips) {
+                statement.setInt(1, avatarLookId);
+                statement.setInt(2, equipId);
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public List<Integer> getEquips(int avatarLookId) {
+        String sql = "SELECT * FROM hairEquip WHERE avatarLookId = ?";
+        List<Integer> equips = new ArrayList<>();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, avatarLookId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                equips.add(rs.getInt("equipId"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return equips;
+    }
+
     public AvatarLook findById(int characterId, int id) {
         String sql = "SELECT * FROM avatarLook WHERE id = ?";
         AvatarLook avatarLook = new AvatarLook();
@@ -42,6 +74,7 @@ public class AvatarLookDao {
                 avatarLook.setFace(rs.getInt("face"));
                 avatarLook.setHair(rs.getInt("hair"));
                 avatarLook.setWeaponId(rs.getInt("weaponId"));
+                avatarLook.setHairEquips(getEquips(avatarLook.getId()));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

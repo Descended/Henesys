@@ -164,11 +164,13 @@ public class LoginHandler {
         characterStat.setMaxHp(50);
         characterStat.setMp(5);
         characterStat.setMaxMp(5);
+        characterStat.setFieldId(180000001);
         characterStatDao = new CharacterStatDao();
         int characterStatId = characterStatDao.createCharStat(characterStat);
-        AvatarLook avatarLook = new AvatarLook(gender, skin, face, hair, weapon);
+        AvatarLook avatarLook = new AvatarLook(gender, skin, face, hair, weapon, items);
         AvatarLookDao avatarLookDao = new AvatarLookDao();
         int avatarLookId = avatarLookDao.createAvatarLook(avatarLook);
+        avatarLookDao.saveEquips(avatarLookId, avatarLook.getHairEquips());
         CharDao charDao = new CharDao();
         int characterId = charDao.createCharacter(acc.getId(), characterStatId, avatarLookId);
         Char chr = new Char(characterId, characterStat, acc.getId(), avatarLook);
