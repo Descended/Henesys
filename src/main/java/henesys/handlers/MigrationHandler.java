@@ -18,8 +18,8 @@ public class MigrationHandler {
 
     @Handler(op = InHeader.MIGRATE_IN)
     public static void handleMigrateIn(Client c, InPacket inPacket) {
+        short idk = inPacket.decodeShort();
         int charId = inPacket.decodeInt();
-        charId = 1;
         boolean adminClient = inPacket.decodeByte() != 0;
         Tuple<Byte, Client> info = Server.getInstance().getChannelFromTransfer(charId, 0);
         byte channel = info.getLeft();

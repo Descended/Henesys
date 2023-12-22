@@ -180,7 +180,8 @@ public class Login {
         outPacket.encodeByte(errorCode);
 
         if (loginType == LoginType.Success) {
-            outPacket.encodeArr(Inet4Address.getLoopbackAddress().getAddress());
+            byte[] address = Inet4Address.getLoopbackAddress().getAddress();
+            outPacket.encodeArr(address);
             outPacket.encodeShort(port);
 
             outPacket.encodeShort(ServerConstants.CHAT_PORT);
