@@ -1,5 +1,6 @@
 package henesys.connection.packet;
 
+import henesys.Server;
 import henesys.ServerConstants;
 import henesys.client.Account;
 import henesys.client.User;
@@ -9,12 +10,15 @@ import henesys.client.dao.CharDao;
 import henesys.client.dao.CharacterStatDao;
 import henesys.connection.OutPacket;
 import henesys.enums.LoginType;
+import henesys.enums.PicStatus;
 import henesys.handlers.header.OutHeader;
 import henesys.util.Position;
 import henesys.util.container.Tuple;
 import henesys.world.Channel;
 import henesys.world.World;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -154,6 +158,7 @@ public class Login {
             outPacket.encodeByte(false); // family stuff, deprecated
             boolean hasRanking = false;
             outPacket.encodeByte(hasRanking);
+            account.addCharacter(chr);
             if (hasRanking) {
                 outPacket.encodeInt(0); // world rank
                 outPacket.encodeInt(0); // getTotRankGap
@@ -161,9 +166,29 @@ public class Login {
                 outPacket.encodeInt(0); // gap
             }
         }
-        outPacket.encodeByte(user.getPicStatus().getVal()); // bLoginOpt
+        outPacket.encodeByte(PicStatus.IGNORE.getVal()); // bLoginOpt
         outPacket.encodeInt(user.getCharacterSlots());
         outPacket.encodeInt(0); // Buying char slots (m_nBuyCharCount)
+
+        return outPacket;
+    }
+
+    public static OutPacket selectCharacterResult(LoginType loginType, byte errorCode, int port, int characterId) {
+        OutPacket outPacket = new OutPacket(OutHeader.SELECT_CHARACTER_RESULT);
+
+        outPacket.encodeByte(loginType.getValue());
+        outPacket.encodeByte(errorCode);
+
+        if (loginType == LoginType.Success) {
+            outPacket.encodeArr(Inet4Address.getLoopbackAddress().getAddress());
+            outPacket.encodeShort(port);
+
+            outPacket.encodeShort(ServerConstants.CHAT_PORT);
+
+            outPacket.encodeInt(characterId);
+            outPacket.encodeByte(0);
+            outPacket.encodeInt(0); // ulArgument
+        }
 
         return outPacket;
     }

@@ -43,6 +43,9 @@ public class World {
         this.dropRate = dropRate;
     }
 
+    public Channel getChannelById(byte id) {
+        return getChannels().stream().filter(c -> c.getChannelId() == id).findFirst().orElse(null);
+    }
     public int getWorldId() {
         return worldId;
     }

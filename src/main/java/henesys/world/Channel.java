@@ -73,5 +73,19 @@ public class Channel {
         return port;
     }
 
+    public void addClientInTransfer(byte channelId, int characterId, Client client) {
+        getTransfers().put(characterId, new Tuple<>(channelId, client));
+    }
 
+    public Map<Integer, Tuple<Byte, Client>> getTransfers() {
+        return transfers;
+    }
+
+    public void setTransfers(Map<Integer, Tuple<Byte, Client>> transfers) {
+        this.transfers = transfers;
+    }
+
+    public void removeClientFromTransfer(int characterId) {
+        getTransfers().remove(characterId);
+    }
 }

@@ -98,4 +98,7 @@ public class Account {
         this.currentChr = currentChr;
     }
 
+    public boolean hasCharacter(int charID) {
+        return getCharById(charID) != null;
+    }
 }

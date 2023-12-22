@@ -1,5 +1,6 @@
 package henesys;
 
+import henesys.client.Client;
 import henesys.connection.crypto.MapleCrypto;
 import henesys.connection.netty.ChannelAcceptor;
 import henesys.connection.netty.ChannelHandler;
@@ -8,6 +9,7 @@ import henesys.connection.netty.LoginAcceptor;
 import henesys.loaders.DataClasses;
 import henesys.util.Loader;
 import henesys.util.Util;
+import henesys.util.container.Tuple;
 import henesys.world.Channel;
 import henesys.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -94,5 +96,17 @@ public class Server extends Properties {
             }
             log.info("Following DAT generation, please restart the server for changes to take effect.");
         }
+    }
+
+    public Tuple<Byte, Client> getChannelFromTransfer(int charId, int worldId) {
+        for (Channel c : getWorldById(worldId).getChannels()) {
+            if (c.getTransfers().containsKey(charId)) {
+                return c.getTransfers().get(charId);
+            }
+        }
+        return null;
+    }
+    public World getWorldById(int id) {
+        return Util.findWithPred(getWorlds(), w -> w.getWorldId() == id);
     }
 }

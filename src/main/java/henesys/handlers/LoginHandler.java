@@ -19,6 +19,7 @@ import henesys.enums.CharNameResult;
 import henesys.enums.LoginType;
 import henesys.handlers.header.InHeader;
 import henesys.loaders.ItemData;
+import henesys.world.Channel;
 import henesys.world.World;
 
 
@@ -89,7 +90,19 @@ public class LoginHandler {
         c.setAccount(account);
         c.write(Login.selectWorldResult(user, account));
     }
-
+    @Handler(op = InHeader.SELECT_CHARACTER)
+    public static void handleCharSelect(Client c, InPacket inPacket) {
+        int characterId = inPacket.decodeInt();
+        String macs = inPacket.decodeString();
+        String hostString = inPacket.decodeString();
+        byte worldId = c.getWorldId();
+        byte channelId = c.getChannel();
+        Channel channel = Server.getInstance().getWorldById(worldId).getChannelById(channelId);
+        if (c.getAccount().hasCharacter(characterId)) {
+            Server.getInstance().getWorldById(worldId).getChannelById(channelId).addClientInTransfer(channelId, characterId, c);
+            c.write(Login.selectCharacterResult(LoginType.Success, (byte) 0, channel.getPort(), characterId));
+        }
+    }
     @Handler(op = InHeader.CHECK_DUPLICATED_ID)
     public static void handleCheckDuplicatedID(Client c, InPacket inPacket) {
         String name = inPacket.decodeString();

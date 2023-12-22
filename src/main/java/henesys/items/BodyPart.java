@@ -7,6 +7,7 @@ import java.util.Arrays;
  * @author Desc
  */
 public enum BodyPart {
+    BPBase(0),
     Hair(0),
     Hat(1),
     FaceAccessory(2),
