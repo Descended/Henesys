@@ -37,6 +37,7 @@ public class CharacterStat {
 
 
     public CharacterStat() {
+        extendSP = new ExtendSP(7);
     }
 
     public CharacterStat(String name, byte gender, byte skin, int face, int hair) {
