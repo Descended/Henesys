@@ -52,6 +52,7 @@ public class CharacterStatDao {
                 cs.setFieldId(rs.getInt("fieldId"));
                 cs.setFieldPortal(rs.getInt("fieldPortal"));
                 cs.setPlayTime(rs.getInt("playTime"));
+                cs.setMoney(rs.getInt("money"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -60,8 +61,8 @@ public class CharacterStatDao {
     }
         public int createCharStat (CharacterStat cs){
             String sql = "INSERT INTO characterStat (name, gender, skin, face, hair, level, job, subJob, str, dex, intt, " +
-                    "luk, hp, maxHp, mp, maxMp, ap, sp, exp, fame, tempExp, fieldId, fieldPortal, playTime) VALUES (?, ?, ?, " +
-                    "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "luk, hp, maxHp, mp, maxMp, ap, sp, exp, fame, tempExp, fieldId, fieldPortal, playTime, money) VALUES (?, ?, ?, " +
+                    "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (Connection conn = DatabaseManager.getConnection();
                  PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, cs.getName());
@@ -88,6 +89,7 @@ public class CharacterStatDao {
                 statement.setInt(22, cs.getFieldId());
                 statement.setInt(23, cs.getFieldPortal());
                 statement.setInt(24, cs.getPlayTime());
+                statement.setInt(25, cs.getMoney());
                 statement.executeUpdate();
                 ResultSet rs = statement.getGeneratedKeys();
                 if (rs.next()) {

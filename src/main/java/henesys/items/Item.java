@@ -28,6 +28,7 @@ public class Item implements Serializable, Encodable {
     protected boolean isCash;
     protected int quantity;
     private String owner = "";
+    private int inventoryId;
 
     public boolean isTradable() {
         return !ItemData.getItemInfoByID(getItemId()).isTradeBlock();

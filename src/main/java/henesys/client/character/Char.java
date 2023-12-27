@@ -5,6 +5,8 @@ import henesys.client.Client;
 import henesys.client.character.avatar.AvatarLook;
 import henesys.connection.OutPacket;
 import henesys.connection.packet.UserLocal;
+import henesys.connection.packet.WvsContext;
+import henesys.constants.ItemConstants;
 import henesys.constants.SkillConstants;
 import henesys.enums.ChatType;
 import henesys.enums.DBChar;
@@ -13,10 +15,16 @@ import henesys.items.BodyPart;
 import henesys.items.Equip;
 import henesys.items.Inventory;
 import henesys.items.Item;
+import henesys.items.container.ItemInfo;
+import henesys.loaders.ItemData;
 import henesys.skills.Skill;
 import henesys.util.FileTime;
 
 import java.util.*;
+import java.util.function.Predicate;
+
+import static henesys.enums.InventoryOperation.Add;
+import static henesys.enums.InventoryOperation.UpdateQuantity;
 
 public class Char {
 
@@ -35,19 +43,19 @@ public class Char {
     private int combatOrders;
     private Client client;
 
-    private int meso;
     private int maxFriends;
 
-    private Inventory equippedInventory = new Inventory(InvType.EQUIPPED, 52);
-    private Inventory equipInventory = new Inventory(InvType.EQUIP, 52);
-    private Inventory consumeInventory = new Inventory(InvType.CONSUME, 52);
-    private Inventory etcInventory = new Inventory(InvType.ETC, 52);
-    private Inventory installInventory = new Inventory(InvType.INSTALL, 52);
-    private Inventory cashInventory = new Inventory(InvType.CASH, 52);
+    private Inventory equippedInventory;
+    private Inventory equipInventory;
+    private Inventory consumeInventory;
+    private Inventory etcInventory;
+    private Inventory installInventory;
+    private Inventory cashInventory;
 
     private Set<Skill> skills;
     private Map<Integer, Long> skillCoolTimes;
 
+    private int bulletIDForAttack;
     public Char() {
     }
 
@@ -56,6 +64,12 @@ public class Char {
         this.accountId = accountId;
         this.characterStat = cs;
         this.avatarLook = avatarLook;
+        this.equippedInventory = new Inventory(InvType.EQUIPPED, 52, id);
+        this.equipInventory = new Inventory(InvType.EQUIP, 52, id);
+        this.consumeInventory = new Inventory(InvType.CONSUME, 52, id);
+        this.etcInventory = new Inventory(InvType.ETC, 52, id);
+        this.installInventory = new Inventory(InvType.INSTALL, 52, id);
+        this.cashInventory = new Inventory(InvType.CASH, 52, id);
     }
 
     public int getId() {
@@ -121,7 +135,7 @@ public class Char {
         }
 
         if (mask.isInMask(DBChar.Money)) {
-            outPacket.encodeInt(getMeso());
+            outPacket.encodeInt(getCharacterStat().getMoney());
         }
 
         if (mask.isInMask(DBChar.InventorySize)) {
@@ -364,6 +378,104 @@ public class Char {
         this.client = client;
     }
 
+    public void addItemToInventory(InvType type, Item item, boolean hasCorrectBagIndex, boolean excelReq, boolean announce) {
+        Inventory inventory = getInventoryByType(type);
+        ItemInfo ii = ItemData.getItemInfoByID(item.getItemId());
+        int quantity = item.getQuantity();
+        if (inventory != null) {
+            Item existingItem = inventory.getItemByItemIDAndStackable(item.getItemId());
+            boolean stackable = true;
+            if (existingItem != null) {
+                boolean expire = existingItem.getDateExpire().equals(item.getDateExpire());
+                if (existingItem.getDateExpire().isPermanent() && item.getDateExpire().isPermanent()) {
+                    expire = true;
+                }
+                stackable = existingItem.getInvType().isStackable() && expire;
+            }
+            boolean rec = false;
+            if (existingItem != null && stackable && !ItemConstants.isRechargable(item.getItemId())) {
+                if (existingItem.getQuantity() < ii.getSlotMax()) {
+                    if (quantity + existingItem.getQuantity() > ii.getSlotMax()) {
+                        quantity = ii.getSlotMax() - existingItem.getQuantity();
+                        item.setQuantity(item.getQuantity() - quantity);
+                        rec = true;
+                    }
+                    existingItem.addQuantity(quantity);
+                    if (announce) {
+                        getClient().write(WvsContext.inventoryOperation(excelReq, false,
+                                UpdateQuantity, (short) existingItem.getBagIndex(), (byte) -1, 0, existingItem));
+                    }
+                    Item copy = item.deepCopy();
+                    copy.setQuantity(quantity);
+                    if (rec) {
+                        addItemToInventory(item.getInvType(), item, false, true, true);
+                    }
+                }
+            } else {
+                if (!hasCorrectBagIndex) {
+                    item.setBagIndex(inventory.getFirstOpenSlot());
+                }
+                Item itemCopy = null;
+                if (item.getInvType().isStackable() && ii != null && item.getQuantity() > ii.getSlotMax()) {
+                    itemCopy = item.deepCopy();
+                    quantity = quantity - ii.getSlotMax();
+                    itemCopy.setQuantity(quantity);
+                    item.setQuantity(ii.getSlotMax());
+                    rec = true;
+                }
+                inventory.addItem(item);
+                getClient().write(WvsContext.inventoryOperation(excelReq, false,
+                        Add, (short) item.getBagIndex(), (byte) -1, 0, item));
+                if (rec) {
+                    addItemToInventory(item.getInvType(), itemCopy, false, excelReq, true);
+                }
+            }
+            setBulletIDForAttack(calculateBulletIDForAttack(1));
+        }
+    }
+
+    public int calculateBulletIDForAttack(int requiredAmount) {
+        Item weapon = getEquippedInventory().getFirstItemByBodyPart(BodyPart.Weapon);
+        if (weapon == null) {
+            return 0;
+        }
+        Predicate<Item> kindOfBulletPred;
+        int id = weapon.getItemId();
+
+        if (ItemConstants.isClaw(id)) {
+            kindOfBulletPred = i -> ItemConstants.isThrowingStar(i.getItemId());
+        } else if (ItemConstants.isBow(id)) {
+            kindOfBulletPred = i -> ItemConstants.isBowArrow(i.getItemId());
+        } else if (ItemConstants.isXBow(id)) {
+            kindOfBulletPred = i -> ItemConstants.isXBowArrow(i.getItemId());
+        } else if (ItemConstants.isGun(id)) {
+            kindOfBulletPred = i -> ItemConstants.isBullet(i.getItemId());
+        } else {
+            return 0;
+        }
+        Item i = getConsumeInventory().getItems().stream().sorted(Comparator.comparing(Item::getBagIndex)).filter(kindOfBulletPred).filter(item -> item.getQuantity() >= requiredAmount).findFirst().orElse(null);
+        return i != null ? i.getItemId() : 0;
+    }
+
+    public Inventory getInventoryByType(InvType invType) {
+        switch (invType) {
+            case EQUIPPED:
+                return getEquippedInventory();
+            case EQUIP:
+                return getEquipInventory();
+            case CONSUME:
+                return getConsumeInventory();
+            case ETC:
+                return getEtcInventory();
+            case INSTALL:
+                return getInstallInventory();
+            case CASH:
+                return getCashInventory();
+            default:
+                return null;
+        }
+    }
+
     /**
      * Consumes {@code quantity} of an item with the specified {@code id} from this Char's {@link Inventory}.
      * Will remove the Item if it has a quantity of 1.
@@ -472,15 +584,6 @@ public class Char {
     public void setMaxFriends(int maxFriends) {
         this.maxFriends = maxFriends;
     }
-
-    public int getMeso() {
-        return meso;
-    }
-
-    public void setMeso(int meso) {
-        this.meso = meso;
-    }
-
     public Inventory getEquipInventory() {
         return equipInventory;
     }
@@ -535,5 +638,13 @@ public class Char {
 
     public void setSkillCoolTimes(Map<Integer, Long> skillCoolTimes) {
         this.skillCoolTimes = skillCoolTimes;
+    }
+
+    public int getBulletIDForAttack() {
+        return bulletIDForAttack;
+    }
+
+    public void setBulletIDForAttack(int bulletIDForAttack) {
+        this.bulletIDForAttack = bulletIDForAttack;
     }
 }

@@ -284,9 +284,34 @@ public class ItemConstants {
         return getItemPrefix(itemID) == EquipPrefix.Cape.getVal();
     }
 
+    public static boolean isClaw(int id) {
+        return getItemPrefix(id) == 147;
+    }
+
+    public static boolean isBow(int id) {
+        return getItemPrefix(id) == 145;
+    }
+
+    public static boolean isXBow(int id) {
+        return getItemPrefix(id) == 146;
+    }
+
+    public static boolean isGun(int id) {
+        return getItemPrefix(id) == 149;
+    }
+
+    public static boolean isXBowArrow(int id) {
+        return id / 1000 == 2061;
+    }
+
+    public static boolean isBowArrow(int itemID) {
+        return itemID / 1000 == 2060;
+    }
+
     public static boolean isArmor(int itemID) {
         return !isAccessory(itemID) && !isWeapon(itemID) && !isMechanicalHeart(itemID);
     }
+
 
     public static boolean isRing(int itemID) {
         return getItemPrefix(itemID) == EquipPrefix.Ring.getVal();
@@ -298,5 +323,9 @@ public class ItemConstants {
 
     public static boolean isConsumable(int itemId) {
         return itemId > 2020000 && itemId < 2050000;
+    }
+
+    public static boolean isRechargable(int itemId) {
+        return isThrowingStar(itemId) || isBullet(itemId);
     }
 }
