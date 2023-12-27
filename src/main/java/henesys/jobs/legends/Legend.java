@@ -1,4 +1,6 @@
 package henesys.jobs.legends;
 
-public class Legend {
+import henesys.jobs.Job;
+
+public class Legend extends Job {
 }

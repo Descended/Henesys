@@ -2,10 +2,13 @@ package henesys.jobs;
 
 import henesys.client.character.CharacterStat;
 
-import java.lang.reflect.InvocationTargetException;
-
 import henesys.jobs.cygnus.*;
-import henesys.jobs.explorer.*;
+import henesys.jobs.explorer.Beginner;
+import henesys.jobs.explorer.Archer.*;
+import henesys.jobs.explorer.Magician.*;
+import henesys.jobs.explorer.Pirate.*;
+import henesys.jobs.explorer.Thief.*;
+import henesys.jobs.explorer.Warrior.*;
 import henesys.jobs.gamemaster.*;
 import henesys.jobs.legends.*;
 import henesys.jobs.resistance.*;
@@ -17,9 +20,19 @@ public class JobManager {
     private static final Class[] jobClasses = new Class[] {
             Beginner.class,
             Warrior.class,
+
             Magician.class,
+
             Archer.class,
+            Hunter.class,
+            Crossbowman.class,
+            Ranger.class,
+            Sniper.class,
+            BowMaster.class,
+            Marksman.class,
+
             Thief.class,
+
             Pirate.class,
 
             Noblesse.class,

@@ -1,4 +1,4 @@
 package henesys.jobs.cygnus;
 
-public class WindArcher {
+public class WindArcher extends Noblesse {
 }

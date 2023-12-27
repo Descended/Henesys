@@ -1,4 +1,6 @@
 package henesys.jobs.cygnus;
 
-public class Noblesse {
+import henesys.jobs.Job;
+
+public class Noblesse extends Job {
 }

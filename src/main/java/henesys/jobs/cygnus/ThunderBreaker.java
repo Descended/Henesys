@@ -1,4 +1,4 @@
 package henesys.jobs.cygnus;
 
-public class ThunderBreaker {
+public class ThunderBreaker extends Noblesse {
 }

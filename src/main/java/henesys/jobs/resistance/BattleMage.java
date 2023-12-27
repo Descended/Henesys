@@ -1,4 +1,4 @@
 package henesys.jobs.resistance;
 
-public class BattleMage {
+public class BattleMage extends Citizen {
 }

@@ -1,15 +1,16 @@
 package henesys.constants;
 
-import henesys.jobs.explorer.*;
-
+import henesys.jobs.explorer.Magician.*;
+import henesys.jobs.explorer.Thief.*;
+import henesys.jobs.explorer.Warrior.*;
 public class SkillConstants {
 
     public static boolean isIgnoreMasterLevelForCommon(int skillId) {
         switch (skillId) {
-            case Magician.BUFF_MASTERY_BISHOP:
-            case Warrior.COMBAT_MASTERY:
-            case Warrior.DIVINE_SHIELD:
-            case Thief.EXPERT_THROWING_STAR_HANDLING:
+            case Bishop.BUFF_MASTERY_BISHOP:
+            case Hero.COMBAT_MASTERY:
+            case Paladin.DIVINE_SHIELD:
+            case NightLord.EXPERT_THROWING_STAR_HANDLING:
                 return true;
             default:
                 return false;

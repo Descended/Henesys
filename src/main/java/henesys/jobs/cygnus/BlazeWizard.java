@@ -1,4 +1,4 @@
 package henesys.jobs.cygnus;
 
-public class BlazeWizard {
+public class BlazeWizard extends Noblesse {
 }

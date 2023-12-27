@@ -1,4 +1,4 @@
 package henesys.jobs.resistance;
 
-public class Mechanic {
+public class Mechanic extends Citizen {
 }

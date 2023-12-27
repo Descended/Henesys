@@ -1,4 +1,4 @@
 package henesys.jobs.cygnus;
 
-public class DawnWarrior {
+public class DawnWarrior extends Noblesse {
 }

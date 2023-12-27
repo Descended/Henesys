@@ -1,4 +1,4 @@
 package henesys.jobs.resistance;
 
-public class WildHunter {
+public class WildHunter extends Citizen {
 }

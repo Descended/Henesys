@@ -1,6 +1,8 @@
 package henesys.jobs.explorer;
 
-public class Beginner {
+import henesys.jobs.Job;
+
+public class Beginner extends Job {
 
     public static final int FOLLOW_THE_LEAD = 8;
     public static final int BLESSING_OF_THE_FAIRY = 12;

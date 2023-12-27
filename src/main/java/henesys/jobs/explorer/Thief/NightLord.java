@@ -1,6 +1,6 @@
-package henesys.jobs.explorer;
+package henesys.jobs.explorer.Thief;
 
-public class Thief {
+public class NightLord {
 
     public static final int EXPERT_THROWING_STAR_HANDLING = 4120010;
 }
