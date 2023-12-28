@@ -11,6 +11,7 @@ public class SkillConstants {
             case Hero.COMBAT_MASTERY:
             case Paladin.DIVINE_SHIELD:
             case NightLord.EXPERT_THROWING_STAR_HANDLING:
+            // TODO: Add more skills here that ignore master level
                 return true;
             default:
                 return false;

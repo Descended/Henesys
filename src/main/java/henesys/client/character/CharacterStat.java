@@ -33,6 +33,8 @@ public class CharacterStat {
     private int playTime;
     private short subJob;
 
+    private int money;
+
     private ExtendSP extendSP;
 
 
@@ -308,5 +310,13 @@ public class CharacterStat {
 
     public void setIntt(short intt) {
         this.intt = intt;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }
