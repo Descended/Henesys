@@ -28,6 +28,7 @@ public class InventoryDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return inventories;
     }
 
     public int createInventory(Inventory inventory) {
@@ -46,5 +47,17 @@ public class InventoryDao {
             throw new RuntimeException(e);
         }
         return 0;
+    }
+
+    public void updateInventory(Inventory inventory) {
+        String sql = "UPDATE inventory SET slots = ? WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setInt(1, inventory.getSlots());
+            statement.setInt(2, inventory.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
