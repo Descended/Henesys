@@ -378,7 +378,7 @@ public class Char {
         this.client = client;
     }
 
-    public void addItemToInventory(InvType type, Item item, boolean hasCorrectBagIndex, boolean excelReq, boolean announce) {
+    public void addItemToInventory(InvType type, Item item, boolean hasCorrectBagIndex, boolean excelReq) {
         Inventory inventory = getInventoryByType(type);
         ItemInfo ii = ItemData.getItemInfoByID(item.getItemId());
         int quantity = item.getQuantity();
@@ -401,14 +401,12 @@ public class Char {
                         rec = true;
                     }
                     existingItem.addQuantity(quantity);
-                    if (announce) {
-                        getClient().write(WvsContext.inventoryOperation(excelReq, false,
-                                UpdateQuantity, (short) existingItem.getBagIndex(), (byte) -1, 0, existingItem));
-                    }
+                    getClient().write(WvsContext.inventoryOperation(excelReq, false,
+                            UpdateQuantity, (short) existingItem.getBagIndex(), (byte) -1, 0, existingItem));
                     Item copy = item.deepCopy();
                     copy.setQuantity(quantity);
                     if (rec) {
-                        addItemToInventory(item.getInvType(), item, false, true, true);
+                        addItemToInventory(item.getInvType(), item, false, true);
                     }
                 }
             } else {
@@ -427,7 +425,7 @@ public class Char {
                 getClient().write(WvsContext.inventoryOperation(excelReq, false,
                         Add, (short) item.getBagIndex(), (byte) -1, 0, item));
                 if (rec) {
-                    addItemToInventory(item.getInvType(), itemCopy, false, excelReq, true);
+                    addItemToInventory(item.getInvType(), itemCopy, false, excelReq);
                 }
             }
             setBulletIDForAttack(calculateBulletIDForAttack(1));
