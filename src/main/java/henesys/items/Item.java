@@ -29,6 +29,7 @@ public class Item implements Serializable, Encodable {
     protected int quantity;
     private String owner = "";
     private int inventoryId;
+    private int trunkId;
 
     public boolean isTradable() {
         return !ItemData.getItemInfoByID(getItemId()).isTradeBlock();
@@ -222,6 +223,22 @@ public class Item implements Serializable, Encodable {
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
         return id == item.id && item.id == item.itemId;
+    }
+
+    public int getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(int inventoryId) {
+        this.inventoryId = inventoryId;
+    }
+
+    public int getTrunkId() {
+        return trunkId;
+    }
+
+    public void setTrunkId(int trunkId) {
+        this.trunkId = trunkId;
     }
 
     @Override

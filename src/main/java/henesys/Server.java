@@ -6,6 +6,7 @@ import henesys.connection.netty.ChannelAcceptor;
 import henesys.connection.netty.ChannelHandler;
 import henesys.connection.netty.ChatAcceptor;
 import henesys.connection.netty.LoginAcceptor;
+import henesys.items.Item;
 import henesys.loaders.DataClasses;
 import henesys.util.Loader;
 import henesys.util.Util;
@@ -28,6 +29,8 @@ public class Server extends Properties {
     private static final Logger log = LogManager.getLogger(Server.class);
 
     private List<World> worldList = ServerConfig.WORLDS;
+
+    private long uniqueItemIdCounter;
 
     public static Server getInstance() {
         return server;
@@ -108,5 +111,14 @@ public class Server extends Properties {
     }
     public World getWorldById(int id) {
         return Util.findWithPred(getWorlds(), w -> w.getWorldId() == id);
+    }
+
+    public synchronized void assignItemIdAndInc(Item item) {
+        item.setId(uniqueItemIdCounter);
+        incItemIdCounter();
+    }
+
+    private synchronized void incItemIdCounter() {
+        uniqueItemIdCounter++;
     }
 }

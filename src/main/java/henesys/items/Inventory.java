@@ -99,6 +99,7 @@ public class Inventory {
             }
             getItems().add(item);
             item.setInvType(getType());
+            item.setInventoryId(getId());
             sortItemsByIndex();
         }
     }
