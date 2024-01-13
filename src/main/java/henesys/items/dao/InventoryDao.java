@@ -11,7 +11,7 @@ import java.util.List;
 public class InventoryDao {
 
     public List<Inventory> getInventoriesByCharacterId(int characterId) {
-        String sql = "SELECT * FROM inventory WHERE character_id = ?";
+        String sql = "SELECT * FROM inventory WHERE charactersId = ?";
         ArrayList<Inventory> inventories = new ArrayList<>();
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -32,7 +32,7 @@ public class InventoryDao {
     }
 
     public int createInventory(Inventory inventory) {
-        String sql = "INSERT INTO inventory (type, slots) VALUES (?, ?)";
+        String sql = "INSERT INTO inventory (type, slots, charactersId) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, inventory.getType().getVal());
