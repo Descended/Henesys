@@ -17,12 +17,14 @@ public class InventoryDao {
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, characterId);
             ResultSet rs = statement.executeQuery();
+            ItemDao itemDao = new ItemDao();
             while (rs.next()) {
                 Inventory inventory = new Inventory();
                 inventory.setId(rs.getInt("id"));
                 inventory.setType(InvType.getInvTypeByVal(rs.getInt("type")));
                 inventory.setSlots((byte) rs.getInt("slots"));
                 inventory.setCharacterId(rs.getInt("charactersId"));
+                inventory.setItems(itemDao.getItemsByInventory(inventory));
                 inventories.add(inventory);
             }
         } catch (SQLException e) {

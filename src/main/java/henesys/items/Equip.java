@@ -16,7 +16,6 @@ import static henesys.enums.BaseStat.AllStat;
  * Created on 11/23/2017.
  */
 public class Equip extends Item {
-    private long serialNumber;
     private String title = "";
     private FileTime equippedDate = FileTime.fromType(FileTime.Type.PLAIN_ZERO);
     private int prevBonusExpRate;
@@ -97,7 +96,6 @@ public class Equip extends Item {
         Equip ret = new Equip();
         ret.quantity = quantity;
         ret.bagIndex = bagIndex;
-        ret.serialNumber = serialNumber;
         ret.title = title;
         ret.equippedDate = equippedDate.deepCopy();
         ret.prevBonusExpRate = prevBonusExpRate;
@@ -597,6 +595,11 @@ public class Equip extends Item {
         this.options = options;
     }
 
+    public void setOptions(String options) {
+        // 0,0,0,0,0 TODO
+        this.options = new ArrayList<>();
+    }
+
     public String getiSlot() {
         return iSlot;
     }
@@ -656,10 +659,6 @@ public class Equip extends Item {
 
     public boolean isEquipTradeBlock() {
         return equipTradeBlock;
-    }
-
-    public void setSerialNumber(long serialNumber) {
-        this.serialNumber = serialNumber;
     }
 
     public void setEquippedDate(FileTime equippedDate) {
@@ -743,86 +742,36 @@ public class Equip extends Item {
 //        getEquippedDate().encode(outPacket);
 //        outPacket.encodeInt(getPrevBonusExpRate());
         // GW_ItemSlotEquipBase
-        int mask = getStatMask(0);
-        outPacket.encodeInt(mask);
-        if (hasStat(EquipBaseStat.tuc)) {
-            outPacket.encodeByte(getTuc());
-        }
-        if (hasStat(EquipBaseStat.cuc)) {
-            outPacket.encodeByte(getCuc());
-        }
-        if (hasStat(EquipBaseStat.iStr)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iStr));
-        }
-        if (hasStat(EquipBaseStat.iDex)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iDex));
-        }
-        if (hasStat(EquipBaseStat.iInt)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iInt));
-        }
-        if (hasStat(EquipBaseStat.iLuk)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iLuk));
-        }
-        if (hasStat(EquipBaseStat.iMaxHP)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iMaxHP));
-        }
-        if (hasStat(EquipBaseStat.iMaxMP)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iMaxMP));
-        }
-        if (hasStat(EquipBaseStat.iPAD)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iPAD));
-        }
-        if (hasStat(EquipBaseStat.iMAD)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iMAD));
-        }
-        if (hasStat(EquipBaseStat.iPDD)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iPDD));
-        }
-        if (hasStat(EquipBaseStat.iMDD)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iMDD));
-        }
-        if (hasStat(EquipBaseStat.iACC)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iACC));
-        }
-        if (hasStat(EquipBaseStat.iEVA)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iEVA));
-        }
-        if (hasStat(EquipBaseStat.iCraft)) {
-            outPacket.encodeShort(getiCraft());
-        }
-        if (hasStat(EquipBaseStat.iSpeed)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iSpeed));
-        }
-        if (hasStat(EquipBaseStat.iJump)) {
-            outPacket.encodeShort(getTotalStat(EquipBaseStat.iJump));
-        }
-
-//        if(hasStat(EquipBaseStat.title)) {
-            outPacket.encodeString(getTitle());
-//        }
-        if (hasStat(EquipBaseStat.attribute)) {
-            outPacket.encodeShort(getAttribute());
-        }
-        if (hasStat(EquipBaseStat.levelUpType)) {
-            outPacket.encodeByte(getLevelUpType());
-        }
-        if (hasStat(EquipBaseStat.level)) {
-            outPacket.encodeByte(getLevel());
-        }
-        if (hasStat(EquipBaseStat.exp)) {
-            outPacket.encodeLong(getExp());
-        }
-        if (hasStat(EquipBaseStat.durability)) {
-            outPacket.encodeInt(getDurability());
-        }
-        if (hasStat(EquipBaseStat.iuc)) {
-            outPacket.encodeInt(getIuc()); // hammer
-        }
+        outPacket.encodeByte(getTuc());
+        outPacket.encodeByte(getCuc());
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iStr));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iDex));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iInt));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iLuk));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iMaxHP));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iMaxMP));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iPAD));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iMAD));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iPDD));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iMDD));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iACC));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iEVA));
+        outPacket.encodeShort(getiCraft());
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iSpeed));
+        outPacket.encodeShort(getTotalStat(EquipBaseStat.iJump));
+        outPacket.encodeString(getTitle());
+        outPacket.encodeShort(getAttribute());
+        outPacket.encodeByte(getLevelUpType());
+        outPacket.encodeByte(getLevel());
+        outPacket.encodeLong(getExp());
+        outPacket.encodeInt(getDurability());
+        outPacket.encodeInt(getIuc()); // hammer
         // GW_ItemSlotEquipOpt
-        outPacket.encodeByte(getGrade());
+        outPacket.encodeByte(0); // getGrade()
         outPacket.encodeByte(getChuc());
         for (int i = 0; i < 3; i++) {
-            outPacket.encodeInt(getOptionBase(i));
+//            outPacket.encodeInt(getOptionBase(i));
+            outPacket.encodeInt(0);
         }
 
         for (int i = 0; i < 2; i++) {
@@ -1246,6 +1195,9 @@ public class Equip extends Item {
 
     public void setSockets(List<Integer> sockets) {
         this.sockets = sockets;
+    }
+    public void setSockets(String socket) {
+        this.sockets = new ArrayList<>(); // TODO
     }
 
     public double getPotentialBaseStat(BaseStat baseStat, boolean isBonus) {

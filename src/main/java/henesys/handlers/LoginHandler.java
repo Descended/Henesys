@@ -16,11 +16,22 @@ import henesys.connection.packet.Login;
 import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
 import henesys.enums.CharNameResult;
+import henesys.enums.InvType;
 import henesys.enums.LoginType;
 import henesys.handlers.header.InHeader;
+import henesys.items.Equip;
+import henesys.items.Inventory;
+import henesys.items.dao.InventoryDao;
+import henesys.items.dao.ItemDao;
 import henesys.loaders.ItemData;
 import henesys.world.Channel;
 import henesys.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static henesys.enums.InvType.EQUIP;
+import static henesys.enums.InvType.EQUIPPED;
 
 
 public class LoginHandler {
@@ -99,6 +110,24 @@ public class LoginHandler {
         byte channelId = c.getChannel();
         Channel channel = Server.getInstance().getWorldById(worldId).getChannelById(channelId);
         if (c.getAccount().hasCharacter(characterId)) {
+            c.setChr(c.getAccount().getCharById(characterId));
+            InventoryDao inventoryDao = new InventoryDao();
+            List<Inventory> inventories = inventoryDao.getInventoriesByCharacterId(characterId);
+            for (Inventory inventory : inventories) {
+                if (inventory.getType() == EQUIPPED) {
+                    c.getChr().setEquippedInventory(inventory);
+                } else if (inventory.getType() == InvType.EQUIP) {
+                    c.getChr().setEquipInventory(inventory);
+                } else if (inventory.getType() == InvType.CONSUME) {
+                    c.getChr().setConsumeInventory(inventory);
+                } else if (inventory.getType() == InvType.INSTALL) {
+                    c.getChr().setInstallInventory(inventory);
+                } else if (inventory.getType() == InvType.ETC) {
+                    c.getChr().setEtcInventory(inventory);
+                } else if (inventory.getType() == InvType.CASH) {
+                    c.getChr().setCashInventory(inventory);
+                }
+            }
             Server.getInstance().getWorldById(worldId).getChannelById(channelId).addClientInTransfer(channelId, characterId, c);
             c.write(Login.selectCharacterResult(LoginType.Success, (byte) 0, channel.getPort(), characterId));
         }
@@ -174,7 +203,26 @@ public class LoginHandler {
         CharDao charDao = new CharDao();
         int characterId = charDao.createCharacter(acc.getId(), characterStatId, avatarLookId);
         Char chr = new Char(characterId, characterStat, acc.getId(), avatarLook);
+        chr.setClient(c);
+        InventoryDao inventoryDao = new InventoryDao();
+        int equippedInventoryId = inventoryDao.createInventory(chr.getEquippedInventory());
+        chr.getEquippedInventory().setId(equippedInventoryId);
+        inventoryDao.createInventory(chr.getEquipInventory());
+        inventoryDao.createInventory(chr.getConsumeInventory());
+        inventoryDao.createInventory(chr.getEtcInventory());
+        inventoryDao.createInventory(chr.getInstallInventory());
+        inventoryDao.createInventory(chr.getCashInventory());
+        for (int i : chr.getAvatarLook().getHairEquips()) {
+            Equip equip = ItemData.getEquipDeepCopyFromID(i, false);
+            if (equip != null && equip.getItemId() >= 1000000) {
+                equip.setBagIndex(ItemConstants.getBodyPartFromItem(
+                        equip.getItemId(), chr.getAvatarLook().getGender()));
+                chr.addItemToInventory(EQUIPPED, equip, true, true);
+            }
+        }
         characterStat.setCharacterId(characterId);
+        ItemDao itemDao = new ItemDao();
+        itemDao.saveItems(chr.getEquippedInventory());
         c.getAccount().addCharacter(chr);
         c.write(Login.createNewCharacterResult(LoginType.Success, chr));
     }

@@ -142,7 +142,16 @@ public class Item implements Serializable, Encodable {
     }
 
     public Type getType() {
-        return type;
+        if (type != null) {
+            return type;
+        }
+        if (ItemConstants.isEquip(this.itemId)) {
+            return Type.EQUIP;
+        } else if (ItemConstants.isPet(this.itemId)) {
+            return Type.PET;
+        } else {
+            return Type.ITEM;
+        }
     }
 
     public boolean isCash() {

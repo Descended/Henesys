@@ -7,10 +7,15 @@ import henesys.client.User;
 import henesys.client.character.Char;
 import henesys.connection.InPacket;
 import henesys.connection.packet.Stage;
+import henesys.enums.InvType;
 import henesys.handlers.header.InHeader;
+import henesys.items.Inventory;
+import henesys.items.dao.InventoryDao;
 import henesys.util.container.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class MigrationHandler {
 

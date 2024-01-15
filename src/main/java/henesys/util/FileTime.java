@@ -4,6 +4,7 @@ package henesys.util;
 import henesys.connection.OutPacket;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -122,6 +123,10 @@ public class FileTime implements Serializable {
         return fromLong(time);
     }
 
+    public static FileTime fromTimestamp(Timestamp timestamp) {
+        return fromEpochMillis(timestamp.getTime());
+    }
+
     /**
      * Converts this FileTime (storing epoch millis) to a format that the client expects.
      *
@@ -171,6 +176,10 @@ public class FileTime implements Serializable {
      */
     public LocalDateTime toLocalDateTime() {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(toMillis()), ZoneId.systemDefault());
+    }
+
+    public Timestamp toTimestamp() {
+        return Timestamp.from(toInstant());
     }
 
     /**
