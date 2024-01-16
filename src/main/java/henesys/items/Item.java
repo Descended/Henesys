@@ -159,7 +159,6 @@ public class Item implements Serializable, Encodable {
     }
 
     public void encode(OutPacket outPacket) {
-        outPacket.encodeByte(getType().getVal());
         // GW_ItemSlotBase
         outPacket.encodeInt(getItemId());
         outPacket.encodeByte(isCash());
@@ -167,7 +166,6 @@ public class Item implements Serializable, Encodable {
             outPacket.encodeLong(getId());
         }
         outPacket.encodeFT(getDateExpire());
-        outPacket.encodeInt(getBagIndex());
         if (getType() == Type.ITEM) {
             outPacket.encodeShort(getQuantity()); // nQuantity
             outPacket.encodeString(getOwner()); // sOwner

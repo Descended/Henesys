@@ -152,7 +152,7 @@ public class Char {
         }
 
         if (mask.isInMask(DBChar.ItemSlotEquip)) {
-            List<Item> equippedItems = new ArrayList<>(getEquippedInventory().getItems());
+            List<Item> equippedItems = getEquippedInventory().getItems();
             equippedItems.sort(Comparator.comparingInt(Item::getBagIndex));
             // Normal equipped items
             for (Item item : equippedItems) {

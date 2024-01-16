@@ -734,6 +734,7 @@ public class Equip extends Item {
     }
 
     public void encode(OutPacket outPacket) {
+        outPacket.encodeByte(1);
         // GW_ItemSlotBase
         super.encode(outPacket);
         // GW_ItemSlotEquip
@@ -763,15 +764,16 @@ public class Equip extends Item {
         outPacket.encodeShort(getAttribute());
         outPacket.encodeByte(getLevelUpType());
         outPacket.encodeByte(getLevel());
-        outPacket.encodeLong(getExp());
+        outPacket.encodeInt(getExp());
         outPacket.encodeInt(getDurability());
         outPacket.encodeInt(getIuc()); // hammer
         // GW_ItemSlotEquipOpt
         outPacket.encodeByte(0); // getGrade()
         outPacket.encodeByte(getChuc());
+
         for (int i = 0; i < 3; i++) {
-//            outPacket.encodeInt(getOptionBase(i));
-            outPacket.encodeInt(0);
+//            outPacket.encodeShort(getOptionBase(i));
+            outPacket.encodeShort(0);
         }
 
         for (int i = 0; i < 2; i++) {
