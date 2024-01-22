@@ -6,6 +6,7 @@ import henesys.client.character.avatar.AvatarLook;
 import henesys.connection.OutPacket;
 import henesys.connection.packet.UserLocal;
 import henesys.connection.packet.WvsContext;
+import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
 import henesys.constants.SkillConstants;
 import henesys.enums.ChatType;
@@ -528,7 +529,13 @@ public class Char {
 //        }
 //        setBulletIDForAttack(calculateBulletIDForAttack(1));
     }
+    public boolean canAddMoney(long reqMoney) {
+        return getMoney() + reqMoney > 0 && getMoney() + reqMoney < GameConstants.MAX_MONEY;
+    }
 
+    public long getMoney() {
+        return getCharacterStat().getMoney();
+    }
     /**
      * Sends a message to this Char with a given {@link ChatType colour}.
      *
@@ -644,5 +651,55 @@ public class Char {
 
     public void setBulletIDForAttack(int bulletIDForAttack) {
         this.bulletIDForAttack = bulletIDForAttack;
+    }
+
+    private boolean canHold(List<Item> items) {
+        // explicitly use a Char param to avoid accidentally adding items
+        if (items.isEmpty()) {
+            return true;
+        }
+        Item item = items.getFirst();
+        if (canHold(item.getItemId())) {
+            Inventory inv = getInventoryByType(item.getInvType());
+            inv.addItem(item);
+            items.remove(item);
+            return canHold(items);
+        } else {
+            return false;
+        }
+
+    }
+    /**
+     * Checks if this Char can hold an Item in their inventory, assuming that its quantity is 1.
+     *
+     * @param id the item's itemID
+     * @return whether or not this Char can hold an item in their inventory
+     */
+    public boolean canHold(int id) {
+        boolean canHold;
+        if (ItemConstants.isEquip(id)) {  //Equip
+            canHold = getEquipInventory().getSlots() > getEquipInventory().getItems().size();
+        } else {    //Item
+            ItemInfo ii = ItemData.getItemInfoByID(id);
+            Inventory inv = getInventoryByType(ii.getInvType());
+            Item curItem = inv.getItemByItemID(id);
+            canHold = (curItem != null && curItem.getQuantity() + 1 < ii.getSlotMax()) || inv.getSlots() > inv.getItems().size();
+        }
+        return canHold;
+    }
+
+    public boolean canHold(int id, int quantity) {
+        int slotMax = 1;
+        ItemInfo ii = ItemData.getItemInfoByID(id);
+        if (ii != null) {
+            slotMax = ii.getSlotMax();
+        }
+        List<Item> items = new ArrayList<>();
+        for (int i = quantity; i > 0; i -= slotMax) {
+            Item item = ItemData.getItemDeepCopy(id);
+            item.setQuantity(Math.min(i, slotMax));
+            items.add(item);
+        }
+        return canHold(items);
     }
 }
