@@ -4,6 +4,7 @@ import henesys.client.Account;
 import henesys.client.Client;
 import henesys.client.character.avatar.AvatarLook;
 import henesys.connection.OutPacket;
+import henesys.connection.packet.Stage;
 import henesys.connection.packet.UserLocal;
 import henesys.connection.packet.WvsContext;
 import henesys.constants.GameConstants;
@@ -20,6 +21,9 @@ import henesys.items.container.ItemInfo;
 import henesys.loaders.ItemData;
 import henesys.skills.Skill;
 import henesys.util.FileTime;
+import henesys.util.Position;
+import henesys.world.field.Field;
+import henesys.world.field.Portal;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -55,6 +59,7 @@ public class Char {
 
     private Set<Skill> skills;
     private Map<Integer, Long> skillCoolTimes;
+    private Field field;
 
     private int bulletIDForAttack;
     public Char() {
@@ -701,5 +706,47 @@ public class Char {
             items.add(item);
         }
         return canHold(items);
+    }
+
+    public Field getField() {
+        return field;
+    }
+
+    public void setField(Field field) {
+        this.field = field;
+    }
+
+    /**
+     * Warps this character to a given field, at a given portal.
+     * Ensures that the previous map does not contain this Char anymore, and that the new field
+     * does.
+     * Ensures that all Lifes are immediately spawned for the new player.
+     *
+     * @param toField The {@link Field} to warp to.
+     */
+    public void warp(Field toField, boolean characterData, boolean saveReturnMap) {
+        if (toField == null) {
+            return;
+        }
+        Field currentField = getField();
+
+        if (currentField != null) {
+            if (saveReturnMap) {
+//                setPreviousFieldID(currentField.getId()); // this may be a bad idea in some cases? idk
+//                setNearestReturnPortal();
+            }
+//            currentField.removeChar(this);
+        }
+
+        setField(toField);
+//        getCharacterStat().setPortal(portal.getId());
+//        setPosition(new Position(portal.getX(), portal.getY()));
+        getClient().write(Stage.setField(this, getClient().getChannel(), getClient().getWorldId(), true));
+    }
+
+    public Field getOrCreateFieldByCurrentInstanceType(int fieldID) {
+        Field res;
+        res = getClient().getChannelInstance().getField(fieldID);
+        return res;
     }
 }

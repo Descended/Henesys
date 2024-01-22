@@ -4,8 +4,10 @@ import henesys.ServerConstants;
 import henesys.client.Account;
 import henesys.client.Client;
 import henesys.client.character.Char;
+import henesys.loaders.FieldData;
 import henesys.util.Util;
 import henesys.util.container.Tuple;
+import henesys.world.field.Field;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,6 +22,8 @@ public class Channel {
     private final int worldId;
     private final int channelId;
     private boolean adultChannel;
+    private List<Field> fields;
+
     private Map<Integer, Tuple<Byte, Client>> transfers;
     private Map<Integer, Char> chars = new HashMap<>();
     public final int MAX_SIZE = 1000;
@@ -29,6 +33,7 @@ public class Channel {
         this.channelId = channelId;
         this.adultChannel = adultChannel;
         this.port = ServerConstants.LOGIN_PORT + 100 + channelId;
+        this.fields = new CopyOnWriteArrayList<>();
         this.transfers = new HashMap<>();
     }
 
@@ -42,9 +47,17 @@ public class Channel {
         this.channelId = channelId;
         this.adultChannel = false;
         this.port = ServerConstants.LOGIN_PORT + (100 * worldId) + channelId;
+        this.fields = new CopyOnWriteArrayList<>();
         this.transfers = new HashMap<>();
     }
 
+    public List<Field> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<Field> fields) {
+        this.fields = fields;
+    }
     public String getName() {
         return name;
     }
@@ -87,5 +100,30 @@ public class Channel {
 
     public void removeClientFromTransfer(int characterId) {
         getTransfers().remove(characterId);
+    }
+
+    private Field createAndReturnNewField(int id) {
+        Field newField = FieldData.getFieldCopyById(id);
+        if (newField != null) {
+            newField.setChannelField(true);
+            newField.setChannel(getChannelId());
+            getFields().add(newField);
+        }
+        return newField;
+    }
+
+    /**
+     * Gets a {@link Field} corresponding to a given ID. If it doesn't exist, creates one.
+     *
+     * @param id The map ID of the field.
+     * @return The (possibly newly created) Field.
+     */
+    public Field getField(int id) {
+        for (Field field : getFields()) {
+            if (field.getId() == id) {
+                return field;
+            }
+        }
+        return createAndReturnNewField(id);
     }
 }

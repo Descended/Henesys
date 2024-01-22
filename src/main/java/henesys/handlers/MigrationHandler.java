@@ -6,12 +6,9 @@ import henesys.client.Client;
 import henesys.client.User;
 import henesys.client.character.Char;
 import henesys.connection.InPacket;
-import henesys.connection.packet.Stage;
-import henesys.enums.InvType;
 import henesys.handlers.header.InHeader;
-import henesys.items.Inventory;
-import henesys.items.dao.InventoryDao;
 import henesys.util.container.Tuple;
+import henesys.world.field.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +38,7 @@ public class MigrationHandler {
         if (chr == null || chr.getId() != charId) {
             chr = acc.getCharById(charId);
         }
-        c.write(Stage.setField(chr, channel, 0, true));
+        Field field = chr.getOrCreateFieldByCurrentInstanceType(chr.getField().getId() <= 0 ? 100000000 : chr.getField().getId());
+        chr.warp(field, true, true);
     }
 }
