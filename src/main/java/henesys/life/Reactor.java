@@ -1,12 +1,15 @@
 package henesys.life;
 
 import henesys.client.character.Char;
+import henesys.life.drop.DropInfo;
+import henesys.loaders.ReactorData;
 import henesys.loaders.containers.ReactorInfo;
 import henesys.util.Position;
 import henesys.world.field.Field;
 import henesys.world.field.Foothold;
 
 import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -88,17 +91,17 @@ public class Reactor extends Life {
     @Override
     public void broadcastSpawnPacket(Char onlyChar) {
         init();
-        getField().broadcastPacket(ReactorPool.reactorEnterField(this));
+//        getField().broadcastPacket(ReactorPool.reactorEnterField(this));
     }
 
     @Override
     public void broadcastLeavePacket() {
         Field field = getField();
-        field.broadcastPacket(ReactorPool.reactorLeaveField(this));
+//        field.broadcastPacket(ReactorPool.reactorLeaveField(this));
         if (field.isChannelField()) {
             Reactor reactor = (Reactor) deepCopy();
             reactor.init();
-            EventManager.addEvent(() -> field.spawnLife(reactor, null), 5, TimeUnit.SECONDS);
+//            EventManager.addEvent(() -> field.spawnLife(reactor, null), 5, TimeUnit.SECONDS);
         }
     }
 
@@ -127,7 +130,7 @@ public class Reactor extends Life {
         setHitCount(getHitCount() + 1);
     }
 
-    public void die(boolean drops) { //idk sorry
+    public void die(boolean drops) {
         getField().removeLife(this);
         if (drops) {
             dropDrops();
