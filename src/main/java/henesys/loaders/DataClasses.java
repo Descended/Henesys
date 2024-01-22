@@ -12,11 +12,15 @@ public class DataClasses {
     public static List<Class> datCreators = new ArrayList<>();
     static {
         dataClasses.addAll(List.of(
-                        ItemData.class
+                        ItemData.class,
+                        FieldData.class
                 )
         );
         datCreators.addAll(List.of(
-                        ItemData.class
+                FieldData.class,
+                ItemData.class,
+                MobData.class,
+                ReactorData.class
                 )
         );
     }
