@@ -5,13 +5,14 @@ import henesys.connection.OutPacket;
 import henesys.enums.DBChar;
 import henesys.handlers.header.OutHeader;
 import henesys.util.FileTime;
+import henesys.world.field.Field;
 
 import java.security.SecureRandom;
 import java.util.Random;
 
 public class Stage {
 
-    public static OutPacket setField(Char chr, int channelId, int worldId, boolean characterData) {
+    public static OutPacket setField(Char chr, Field field, int portalId, int channelId, int worldId, boolean characterData) {
         OutPacket outPacket = new OutPacket(OutHeader.SET_FIELD);
         outPacket.encodeShort(0); // Client option
         outPacket.encodeInt(channelId);
@@ -41,6 +42,12 @@ public class Stage {
                 outPacket.encodeInt(0);
             }
 
+        } else {
+            outPacket.encodeByte(0); // Revive stuff
+            outPacket.encodeInt(field.getId());
+            outPacket.encodeByte(portalId);
+            outPacket.encodeInt(chr.getCharacterStat().getHp());
+            outPacket.encodeByte(0); // Enables two EncodeInts
         }
         outPacket.encodeFT(FileTime.currentTime());
         return outPacket;

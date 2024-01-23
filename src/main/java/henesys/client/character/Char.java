@@ -25,6 +25,7 @@ import henesys.skills.Skill;
 import henesys.util.FileTime;
 import henesys.util.Position;
 import henesys.world.field.Field;
+import henesys.world.field.Portal;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -736,7 +737,7 @@ public class Char {
      *
      * @param toField The {@link Field} to warp to.
      */
-    public void warp(Field toField, boolean characterData, boolean saveReturnMap) {
+    public void warp(Field toField, Portal portal, boolean characterData, boolean saveReturnMap) {
         if (toField == null) {
             return;
         }
@@ -752,8 +753,8 @@ public class Char {
 
         setField(toField);
 //        getCharacterStat().setPortal(portal.getId());
-//        setPosition(new Position(portal.getX(), portal.getY()));
-        getClient().write(Stage.setField(this, getClient().getChannel(), getClient().getWorldId(), true));
+        setPosition(new Position(portal.getX(), portal.getY()));
+        getClient().write(Stage.setField(this, toField, portal.getId(), getClient().getChannel(), getClient().getWorldId(), characterData));
         toField.addChar(this);
 
     }
