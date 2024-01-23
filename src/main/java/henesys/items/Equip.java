@@ -40,7 +40,7 @@ public class Equip extends Item {
     private short levelUpType;
     private short level;
     private short exp;
-    private short durability;
+    private short durability = -1;
     private short iuc;
     private short iPvpDamage;
     private byte iReduceReq;

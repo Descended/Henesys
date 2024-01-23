@@ -3,6 +3,7 @@ package henesys.client.character;
 import henesys.client.Account;
 import henesys.client.Client;
 import henesys.client.character.avatar.AvatarLook;
+import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.connection.OutPacket;
 import henesys.connection.packet.Stage;
 import henesys.connection.packet.UserLocal;
@@ -18,12 +19,12 @@ import henesys.items.Equip;
 import henesys.items.Inventory;
 import henesys.items.Item;
 import henesys.items.container.ItemInfo;
+import henesys.life.room.MiniRoom;
 import henesys.loaders.ItemData;
 import henesys.skills.Skill;
 import henesys.util.FileTime;
 import henesys.util.Position;
 import henesys.world.field.Field;
-import henesys.world.field.Portal;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -60,9 +61,19 @@ public class Char {
     private Set<Skill> skills;
     private Map<Integer, Long> skillCoolTimes;
     private Field field;
-
+    private TemporaryStatManager temporaryStatManager;
     private int bulletIDForAttack;
+    private int completedSetItemID;
+    private int portableChairID;
+    private int activeEffectItemID;
+    private Position position;
+    private int tamingMobLevel;
+    private int tamingMobExp;
+    private int tamingMobFatigue;
+    private MiniRoom miniRoom;
+    private String ADBoardRemoteMsg;
     public Char() {
+        temporaryStatManager = new TemporaryStatManager(this);
     }
 
     public Char(int id, CharacterStat cs, int accountId, AvatarLook avatarLook) {
@@ -713,6 +724,7 @@ public class Char {
     }
 
     public void setField(Field field) {
+        getCharacterStat().setFieldId(field.getId());
         this.field = field;
     }
 
@@ -742,11 +754,97 @@ public class Char {
 //        getCharacterStat().setPortal(portal.getId());
 //        setPosition(new Position(portal.getX(), portal.getY()));
         getClient().write(Stage.setField(this, getClient().getChannel(), getClient().getWorldId(), true));
+        toField.addChar(this);
+
     }
 
     public Field getOrCreateFieldByCurrentInstanceType(int fieldID) {
         Field res;
         res = getClient().getChannelInstance().getField(fieldID);
         return res;
+    }
+
+    public TemporaryStatManager getTemporaryStatManager() {
+        return temporaryStatManager;
+    }
+
+    public void setTemporaryStatManager(TemporaryStatManager temporaryStatManager) {
+        this.temporaryStatManager = temporaryStatManager;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public int getCompletedSetItemID() {
+        return completedSetItemID;
+    }
+
+    public void setCompletedSetItemID(int completedSetItemID) {
+        this.completedSetItemID = completedSetItemID;
+    }
+
+    public int getPortableChairID() {
+        return portableChairID;
+    }
+
+    public void setPortableChairID(int portableChairID) {
+        this.portableChairID = portableChairID;
+    }
+
+    public int getActiveEffectItemID() {
+        return activeEffectItemID;
+    }
+
+    public void setActiveEffectItemID(int activeEffectItemID) {
+        this.activeEffectItemID = activeEffectItemID;
+    }
+
+    public int getTamingMobLevel() {
+        return tamingMobLevel;
+    }
+
+    public void setTamingMobLevel(int tamingMobLevel) {
+        this.tamingMobLevel = tamingMobLevel;
+    }
+
+    public int getTamingMobExp() {
+        return tamingMobExp;
+    }
+
+    public void setTamingMobExp(int tamingMobExp) {
+        this.tamingMobExp = tamingMobExp;
+    }
+
+    public int getTamingMobFatigue() {
+        return tamingMobFatigue;
+    }
+
+    public void setTamingMobFatigue(int tamingMobFatigue) {
+        this.tamingMobFatigue = tamingMobFatigue;
+    }
+
+    public MiniRoom getMiniRoom() {
+        return miniRoom;
+    }
+
+    public void setMiniRoom(MiniRoom miniRoom) {
+        this.miniRoom = miniRoom;
+    }
+
+    public String getADBoardRemoteMsg() {
+        return ADBoardRemoteMsg;
+    }
+
+    public void setADBoardRemoteMsg(String ADBoardRemoteMsg) {
+        this.ADBoardRemoteMsg = ADBoardRemoteMsg;
+    }
+
+    public boolean hasFriendshipItem() {
+        return false;
     }
 }

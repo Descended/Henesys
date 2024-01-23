@@ -2,6 +2,7 @@ package henesys.world.field;
 
 import henesys.client.character.Char;
 import henesys.connection.OutPacket;
+import henesys.connection.packet.UserPool;
 import henesys.constants.FieldConstants;
 import henesys.constants.GameConstants;
 import henesys.enums.FieldType;
@@ -20,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -516,6 +518,13 @@ public class Field {
 
     public void drop(Set<DropInfo> dropInfos, Foothold fh, Position position, int ownerID, int mesoRate, int dropRate, List<Char> playersEligibleForDrops) {
         // TODO
+    }
+
+    public void addChar(Char chr) {
+        if (!getChars().contains(chr)) {
+            getChars().add(chr);
+        }
+        broadcastPacket(UserPool.userEnterField(chr), chr);
     }
 
     public int getNewObjectID() {
