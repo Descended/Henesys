@@ -369,6 +369,17 @@ public class Field {
         return new Tuple<>(left, right);
     }
 
+    public void broadcastPacket(OutPacket outPacket) {
+        if (getChars().size() - 1 > 0)
+            outPacket.retain(getChars().size() - 1);
+        for (Char c : getChars()) {
+            c.getClient().write(outPacket);
+        }
+        if (getChars().isEmpty()) {
+            outPacket.release();
+        }
+    }
+
     public void broadcastPacket(OutPacket outPacket, Char exceptChr) {
         List<Char> chars = getChars().stream().filter(chr -> !chr.equals(exceptChr)).toList();
         if (chars.size() - 1 > 0) {
@@ -523,8 +534,8 @@ public class Field {
     public void addChar(Char chr) {
         if (!getChars().contains(chr)) {
             getChars().add(chr);
+            broadcastPacket(UserPool.userEnterField(chr), chr);
         }
-        broadcastPacket(UserPool.userEnterField(chr), chr);
     }
 
     public int getNewObjectID() {
