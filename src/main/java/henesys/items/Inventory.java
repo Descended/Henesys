@@ -129,4 +129,12 @@ public class Inventory {
     public void setCharacterId(int characterId) {
         this.characterId = characterId;
     }
+
+    public Item getItemBySlot(int bagIndex) {
+        return getItemBySlotS(bagIndex < 0 ? -bagIndex : bagIndex);
+    }
+
+    private Item getItemBySlotS(int bagIndex) {
+        return getItems().stream().filter(item -> item.getBagIndex() == bagIndex).findAny().orElse(null);
+    }
 }
