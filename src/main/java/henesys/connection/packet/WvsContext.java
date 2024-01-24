@@ -1,17 +1,80 @@
 package henesys.connection.packet;
 
+import henesys.client.character.ExtendSP;
 import henesys.connection.OutPacket;
 import henesys.enums.InvType;
 import henesys.enums.InventoryOperation;
+import henesys.enums.Stat;
 import henesys.handlers.header.OutHeader;
 import henesys.items.Equip;
 import henesys.items.Item;
+
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class WvsContext {
 
     public static OutPacket exclRequest() {
 //        return new OutPacket(OutHeader.EXCL_REQUEST);
         return null;
+    }
+
+    public static OutPacket statChanged(Map<Stat, Object> stats, boolean exclRequestSent) {
+        OutPacket outPacket = new OutPacket(OutHeader.STAT_CHANGED);
+        outPacket.encodeByte(exclRequestSent);
+
+        int mask = 0;
+        for (Stat stat : stats.keySet()) {
+            mask |= stat.getVal();
+        }
+        outPacket.encodeInt(mask);
+        // sorts stats by their order in the Stat enum
+        Comparator<Object> statComper = Comparator.comparingInt(o -> ((Stat) o).getVal());
+        TreeMap<Stat, Object> sortedStats = new TreeMap<>(statComper);
+        sortedStats.putAll(stats);
+        for (Map.Entry<Stat, Object> entry : sortedStats.entrySet()) {
+            Stat stat = entry.getKey();
+            Object value = entry.getValue();
+
+            switch (stat) {
+                case skin:
+                case level:
+                    outPacket.encodeByte((Byte) value);
+                    break;
+                case face:
+                case hair:
+                case hp:
+                case mhp:
+                case mp:
+                case mmp:
+                case pop:
+                    outPacket.encodeInt((Integer) value);
+                    break;
+                case str:
+                case dex:
+                case inte:
+                case luk:
+                case ap:
+                case subJob:
+                    outPacket.encodeShort((Short) value);
+                    break;
+                case sp:
+                    if (value instanceof ExtendSP) {
+                        ((ExtendSP) value).encode(outPacket);
+                    } else {
+                        outPacket.encodeShort((Short) value);
+                    }
+                    break;
+                case exp:
+                case money:
+                    outPacket.encodeLong((Long) value);
+                    break;
+            }
+        }
+        outPacket.encodeByte(0); // nMixBaseHairColor
+        outPacket.encodeByte(0); // nMixAddHairColor
+        return outPacket;
     }
 
     public static OutPacket inventoryOperation(boolean exclRequestSent, boolean notRemoveAddInfo, InventoryOperation type, short oldPos, short newPos,

@@ -9,6 +9,8 @@ import henesys.handlers.header.InHeader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Objects;
+
 public class ChatHandler {
 
     private static final Logger log = LogManager.getLogger(ChatHandler.class);
@@ -18,7 +20,9 @@ public class ChatHandler {
     public static void handleUserChat(Client c, InPacket inPacket) {
         inPacket.decodeInt(); // timestamp
         String message = inPacket.decodeString();
-        if (message == "@dispose") {
+        if (Objects.equals(message, "@dispose")) {
+            c.getChr().dispose();
+            return;
         }
         boolean balloon = inPacket.decodeByte() != 0;
         c.getChr().getField().broadcastPacket(UserPacket.chat(c.getChr().getId(), ChatUserType.User, message, balloon));
