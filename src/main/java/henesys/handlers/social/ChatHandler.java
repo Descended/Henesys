@@ -23,6 +23,9 @@ public class ChatHandler {
         if (Objects.equals(message, "@dispose")) {
             c.getChr().dispose();
             return;
+        } else if (Objects.equals(message, "@heal")) {
+            c.getChr().heal(c.getChr().getCharacterStat().getMaxHp(), true);
+            return;
         }
         boolean balloon = inPacket.decodeByte() != 0;
         c.getChr().getField().broadcastPacket(UserPacket.chat(c.getChr().getId(), ChatUserType.User, message, balloon));

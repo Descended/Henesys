@@ -14,6 +14,7 @@ import henesys.constants.SkillConstants;
 import henesys.enums.ChatType;
 import henesys.enums.DBChar;
 import henesys.enums.InvType;
+import henesys.enums.Stat;
 import henesys.items.BodyPart;
 import henesys.items.Equip;
 import henesys.items.Inventory;
@@ -380,6 +381,89 @@ public class Char {
         getClient().write(WvsContext.statChanged(Collections.emptyMap(), true));
     }
 
+    /**
+     * Heals this Char's HP for a certain amount. Caps off at maximum HP.
+     *
+     * @param amount The amount to heal.
+     */
+    public void heal(int amount, boolean whilstDeath) {
+        CharacterStat cs = getCharacterStat();
+        int curHP = cs.getHp();
+        int maxHP = cs.getMaxHp();
+        int newHP = Math.min(curHP + amount, maxHP);
+        Map<Stat, Object> stats = new HashMap<>();
+
+        if (whilstDeath || cs.getHp() > 0) {
+            setStat(Stat.hp, newHP);
+            stats.put(Stat.hp, newHP);
+            getClient().write(WvsContext.statChanged(stats, false));
+        }
+    }
+
+    /**
+     * Unequips an {@link Item}. Ensures that the hairEquips and both inventories get updated.
+     *
+     * @param item The Item to equip.
+     */
+    public void unequip(Item item) {
+
+    }
+
+    /**
+     * Equips an {@link Item}. Ensures that the hairEquips and both inventories get updated.
+     *
+     * @param item The Item to equip.
+     */
+    public boolean equip(Item item, int newPos) {
+        return false;
+    }
+    public void setStat(Stat charStat, int amount) {
+        CharacterStat cs = getCharacterStat();
+        switch (charStat) {
+            case str:
+                cs.setStr((short) amount);
+                break;
+            case dex:
+                cs.setDex((short) amount);
+                break;
+            case inte:
+                cs.setInt((short) amount);
+                break;
+            case luk:
+                cs.setLuk((short) amount);
+                break;
+            case hp:
+                cs.setHp(amount);
+                break;
+            case mhp:
+                cs.setMaxHp(amount);
+                break;
+            case mp:
+                cs.setMp(amount);
+                break;
+            case mmp:
+                cs.setMaxMp(amount);
+                break;
+            case ap:
+                cs.setAp((short) amount);
+                break;
+            case level:
+                cs.setLevel((byte) amount);
+                break;
+            case skin:
+                cs.setSkin((byte) amount);
+                break;
+            case face:
+                cs.setFace(amount);
+                break;
+            case hair:
+                cs.setHair(amount);
+                break;
+            case pop:
+                cs.setFame((short) amount);
+                break;
+        }
+    }
     public boolean isTalkingToNpc() {
         return talkingToNpc;
     }
