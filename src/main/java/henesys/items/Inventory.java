@@ -137,4 +137,13 @@ public class Inventory {
     private Item getItemBySlotS(int bagIndex) {
         return getItems().stream().filter(item -> item.getBagIndex() == bagIndex).findAny().orElse(null);
     }
+
+    public void removeItem(Item item) {
+        getItems().remove(item);
+        sortItemsByIndex();
+    }
+
+    public boolean isFull() {
+        return getItems().size() >= getSlots();
+    }
 }
