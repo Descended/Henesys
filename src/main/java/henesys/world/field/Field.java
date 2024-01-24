@@ -537,6 +537,16 @@ public class Field {
             broadcastPacket(UserPool.userEnterField(chr), chr);
         }
     }
+    public void removeChar(Char chr) {
+        if (getChars().contains(chr)) {
+            getChars().remove(chr);
+            broadcastPacket(UserPool.userLeaveField(chr), chr);
+        }
+    }
+
+        public Char getCharByID(int id) {
+        return getChars().stream().filter(chr -> chr.getId() == id).findFirst().orElse(null);
+    }
 
     public int getNewObjectID() {
         return objectIDCounter++;
