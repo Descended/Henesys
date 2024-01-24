@@ -377,7 +377,7 @@ public class Char {
      */
     public void dispose() {
         setTalkingToNpc(false);
-//        getClient().write(WvsContext.exclRequest());
+        getClient().write(WvsContext.statChanged(Collections.emptyMap(), true));
     }
 
     public boolean isTalkingToNpc() {
@@ -748,7 +748,7 @@ public class Char {
 //                setPreviousFieldID(currentField.getId()); // this may be a bad idea in some cases? idk
 //                setNearestReturnPortal();
             }
-//            currentField.removeChar(this);
+            currentField.removeChar(this);
         }
 
         setField(toField);
@@ -848,4 +848,16 @@ public class Char {
     public boolean hasFriendshipItem() {
         return false;
     }
+
+    /**
+     * Returns the Equip equipped at a certain {@link BodyPart}.
+     *
+     * @param bodyPart The requested bodyPart.
+     * @return The Equip corresponding to <code>bodyPart</code>. Null if there is none.
+     */
+    public Item getEquippedItemByBodyPart(BodyPart bodyPart) {
+        List<Item> items = getEquippedInventory().getItemsByBodyPart(bodyPart);
+        return !items.isEmpty() ? items.getFirst() : null;
+    }
+
 }
