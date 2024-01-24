@@ -328,4 +328,8 @@ public class ItemConstants {
     public static boolean isRechargable(int itemId) {
         return isThrowingStar(itemId) || isBullet(itemId);
     }
+
+    public static boolean isChair(int itemID) {
+        return itemID / 10000 == 301;
+    }
 }
