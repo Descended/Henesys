@@ -458,6 +458,59 @@ public class Char {
     public boolean equip(Item item, int newPos) {
         return false;
     }
+
+    /**
+     * Adds a Stat to this Char.
+     *
+     * @param charStat which Stat to add
+     * @param amount   the amount of Stat to add
+     */
+    public void addStat(Stat charStat, int amount) {
+        setStat(charStat, getStat(charStat) + amount);
+    }
+
+    /**
+     * Gets a raw Stat from this Char, unaffected by things such as equips and skills.
+     *
+     * @param charStat The requested Stat
+     * @return the requested stat's value
+     */
+    public int getStat(Stat charStat) {
+        CharacterStat cs = getCharacterStat();
+        switch (charStat) {
+            case str:
+                return cs.getStr();
+            case dex:
+                return cs.getDex();
+            case inte:
+                return cs.getIntt();
+            case luk:
+                return cs.getLuk();
+            case hp:
+                return cs.getHp();
+            case mhp:
+                return cs.getMaxHp();
+            case mp:
+                return cs.getMp();
+            case mmp:
+                return cs.getMaxMp();
+            case ap:
+                return cs.getAp();
+            case level:
+                return cs.getLevel();
+            case skin:
+                return cs.getSkin();
+            case face:
+                return cs.getFace();
+            case hair:
+                return cs.getHair();
+            case pop:
+                return cs.getFame();
+            case subJob:
+                return cs.getSubJob();
+        }
+        return -1;
+    }
     public void setStat(Stat charStat, int amount) {
         CharacterStat cs = getCharacterStat();
         switch (charStat) {
