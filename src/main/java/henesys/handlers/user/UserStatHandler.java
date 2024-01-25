@@ -19,6 +19,7 @@ public class UserStatHandler {
         Char chr = c.getChr();
         CharacterStat cs = chr.getCharacterStat();
         if (cs.getAp() <= 0) { // If the player has no AP, return.
+            chr.dispose();
             return;
         }
         inPacket.decodeInt(); // tick
