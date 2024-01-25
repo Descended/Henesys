@@ -83,6 +83,32 @@ public class AvatarLook {
         }
     }
 
+    public void removeItem(int itemID, int overrideId, boolean cash) {
+        List<Integer> hairEquips = getHairEquips();
+        List<Integer> unseenEquips = getUnseenEquips();
+        if (ItemConstants.isWeapon(itemID)) {
+            if (cash) {
+                unseenEquips.remove((Integer) itemID);
+            } else {
+                setWeaponId(0);
+                hairEquips.remove((Integer) itemID);
+            }
+        } else {
+            if (cash) {
+                hairEquips.remove((Integer) itemID);
+                if (overrideId >= 0) {
+                    unseenEquips.remove((Integer) overrideId);
+                    if (!hairEquips.contains(overrideId)) {
+                        hairEquips.add(overrideId);
+                    }
+                }
+            } else {
+                hairEquips.remove((Integer) itemID);
+                unseenEquips.remove((Integer) itemID);
+            }
+        }
+    }
+
     public List<Integer> getPetIDs() {
         return petIDs;
     }

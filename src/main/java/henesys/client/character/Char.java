@@ -7,14 +7,12 @@ import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.connection.OutPacket;
 import henesys.connection.packet.Stage;
 import henesys.connection.packet.UserLocal;
+import henesys.connection.packet.UserRemote;
 import henesys.connection.packet.WvsContext;
 import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
 import henesys.constants.SkillConstants;
-import henesys.enums.ChatType;
-import henesys.enums.DBChar;
-import henesys.enums.InvType;
-import henesys.enums.Stat;
+import henesys.enums.*;
 import henesys.items.BodyPart;
 import henesys.items.Equip;
 import henesys.items.Inventory;
@@ -401,12 +399,55 @@ public class Char {
     }
 
     /**
+     * "Heals" this Char's MP for a certain amount. Caps off at maximum MP.
+     *
+     * @param amount The amount to heal.
+     */
+    public void healMP(int amount) {
+        CharacterStat cs = getCharacterStat();
+        int curMP = cs.getMp();
+        int maxMP = cs.getMaxMp();
+        int newMP = Math.min(curMP + amount, maxMP);
+        Map<Stat, Object> stats = new HashMap<>();
+        setStat(Stat.mp, newMP);
+        stats.put(Stat.mp, newMP);
+        getClient().write(WvsContext.statChanged(stats, false));
+    }
+
+    /**
      * Unequips an {@link Item}. Ensures that the hairEquips and both inventories get updated.
      *
      * @param item The Item to equip.
      */
     public void unequip(Item item) {
-
+        Inventory inv = getEquippedInventory();
+        AvatarLook al = getAvatarLook();
+        CharacterStat cs = getCharacterStat();
+        int itemID = item.getItemId();
+        getInventoryByType(InvType.EQUIPPED).removeItem(item);
+        item.setBagIndex(getInventoryByType(InvType.EQUIP).getFirstOpenSlot());
+        getInventoryByType(InvType.EQUIP).addItem(item);
+        boolean isCash = item.isCash();
+        int pos = item.getBagIndex();
+        Equip overrideItem;
+        // get the corresponding cash item
+        if (isCash) {
+            overrideItem = (Equip) inv.getItemBySlot(Math.abs(pos) - 100);
+        } else {
+            overrideItem = (Equip) inv.getItemBySlot(Math.abs(pos) + 100);
+        }
+        int overrideItemId = overrideItem == null ? -1 : overrideItem.getItemId();
+        al.removeItem(itemID, overrideItemId, isCash);
+        byte maskValue = AvatarModifiedMask.AvatarLook.getVal();
+        getField().broadcastPacket(UserRemote.avatarModified(this, maskValue, (byte) 0), this);
+        int maxHp = cs.getMaxHp();
+        int maxMp = cs.getMaxMp();
+        if (cs.getHp() > maxHp) {
+            heal(maxHp, false);
+        }
+        if (cs.getMp() > maxMp) {
+            healMP(maxMp);
+        }
     }
 
     /**

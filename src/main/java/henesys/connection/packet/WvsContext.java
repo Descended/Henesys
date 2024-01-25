@@ -88,7 +88,7 @@ public class WvsContext {
         OutPacket outPacket = new OutPacket(OutHeader.INVENTORY_OPERATION);
 
         outPacket.encodeByte(exclRequestSent);
-        outPacket.encodeByte(notRemoveAddInfo);
+        outPacket.encodeByte(true); // context or notRemoveAddInfo
 
         outPacket.encodeByte(type.getVal());
         outPacket.encodeByte(invType.getVal());
