@@ -415,6 +415,30 @@ public class Char {
     }
 
     /**
+     * Heals this Char's HP and MP for a certain amount.
+     * @param hpAmount The amount to heal HP for.
+     * @param mpAmount The amount to heal MP for.
+     * @param whilstDeath Whether to heal even if the Char is dead.
+     */
+    public void healHpMp(int hpAmount, int mpAmount, boolean whilstDeath) {
+        CharacterStat cs = getCharacterStat();
+        int curHP = cs.getHp();
+        int maxHP = cs.getMaxHp();
+        int newHP = Math.min(curHP + hpAmount, maxHP);
+        int curMP = cs.getMp();
+        int maxMP = cs.getMaxMp();
+        int newMP = Math.min(curMP + mpAmount, maxMP);
+        Map<Stat, Object> stats = new HashMap<>();
+        if (whilstDeath || cs.getHp() > 0) {
+            setStat(Stat.hp, newHP);
+            stats.put(Stat.hp, newHP);
+            setStat(Stat.mp, newMP);
+            stats.put(Stat.mp, newMP);
+        }
+        getClient().write(WvsContext.statChanged(stats, false));
+    }
+
+    /**
      * Unequips an {@link Item}. Ensures that the hairEquips and both inventories get updated.
      *
      * @param item The Item to equip.
@@ -930,11 +954,11 @@ public class Char {
         }
 
         setField(toField);
+        toField.addChar(this);
 //        getCharacterStat().setPortal(portal.getId());
         setPosition(new Position(portal.getX(), portal.getY()));
         getClient().write(Stage.setField(this, toField, portal.getId(), getClient().getChannel(), getClient().getWorldId(), characterData));
-        toField.addChar(this);
-
+        toField.spawnLifesForChar(this);
     }
 
     public Field getOrCreateFieldByCurrentInstanceType(int fieldID) {
