@@ -1,6 +1,8 @@
 package henesys.life;
 
 import henesys.client.character.Char;
+import henesys.life.npc.Npc;
+import henesys.loaders.NpcData;
 import henesys.util.Position;
 import henesys.world.field.Field;
 
@@ -245,5 +247,33 @@ public class Life {
 
     public void broadcastLeavePacket() {
 
+
     }
+    public Npc createNpcFromLife() {
+        Npc npc = null;
+        if ("n".equalsIgnoreCase(getLifeType())) {
+            npc = NpcData.getNpcDeepCopyById(getTemplateId());
+            npc.setObjectId(getObjectId());
+            npc.setLifeType(getLifeType());
+            npc.setX(getX());
+            npc.setY(getY());
+            npc.setPosition(new Position(getX(), getY()));
+            npc.setMobTime(getMobTime());
+            npc.setFlip(isFlip());
+            npc.setHide(isHide());
+            npc.setFh(getFh());
+            npc.setCy(getCy());
+            npc.setRx0(getRx0());
+            npc.setRx1(getRx1());
+            npc.setLimitedName(getLimitedName());
+            npc.setHold(isHold());
+            npc.setNoFoothold(isNoFoothold());
+            npc.setDummy(isDummy());
+            npc.setMobTimeOnDie(isMobTimeOnDie());
+            npc.setRegenStart(getRegenStart());
+            npc.setMobAliveReq(getMobAliveReq());
+        }
+        return npc;
+    }
+
 }

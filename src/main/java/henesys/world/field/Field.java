@@ -9,6 +9,7 @@ import henesys.enums.FieldType;
 import henesys.life.Life;
 import henesys.life.drop.Drop;
 import henesys.life.drop.DropInfo;
+import henesys.life.mob.Mob;
 import henesys.util.Position;
 import henesys.util.Rect;
 import henesys.util.Util;
@@ -57,7 +58,6 @@ public class Field {
     private boolean changeToChannelOnLeave;
     private boolean dropsDisabled;
     private ScheduledFuture<?> generateMobsEvent;
-
     public Field(int fieldID) {
         this.id = fieldID;
         this.rect = new Rect();
@@ -516,7 +516,13 @@ public class Field {
     }
 
     public void addLife(Life life) {
-        // TODO
+        if (life.getObjectId() < 0) {
+            life.setObjectId(getNewObjectID());
+        }
+        if (!getLifes().containsValue(life)) {
+            getLifes().put(life.getObjectId(), life);
+            life.setField(this);
+        }
     }
 
     public void removeLife(Life life) {
@@ -550,6 +556,42 @@ public class Field {
 
     public int getNewObjectID() {
         return objectIDCounter++;
+    }
+
+    public void putLifeController(Life life, Char chr) {
+        getLifeToControllers().put(life, chr);
+    }
+    private void setRandomController(Life life) {
+        // No chars -> set controller to null, so a controller will be assigned next time someone enters this field
+        Char controller = null;
+        if (!getChars().isEmpty()) {
+            controller = Util.getRandomFromCollection(getChars());
+        }
+        putLifeController(life, controller);
+    }
+
+    public void spawnLife(Life life, Char onlyChar) {
+        addLife(life);
+        if (!getChars().isEmpty()) {
+             Char controller = null;
+             if (getLifeToControllers().containsKey(life)) {
+                 controller = getLifeToControllers().get(life);
+             }
+             if (controller == null) {
+                 setRandomController(life);
+             }
+             life.broadcastSpawnPacket(onlyChar);
+        }
+    }
+    public void spawnLifesForChar(Char chr) {
+        for (Life life : getLifes().values()) {
+            spawnLife(life, chr);
+        }
+        for (Char c : getChars()) {
+            if (!c.equals(chr)) {
+                chr.getClient().write(UserPool.userEnterField(c));
+            }
+        }
     }
 
 }
