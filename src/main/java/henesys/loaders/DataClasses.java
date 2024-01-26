@@ -20,6 +20,7 @@ public class DataClasses {
                 FieldData.class,
                 ItemData.class,
                 MobData.class,
+                NpcData.class,
                 ReactorData.class
                 )
         );
