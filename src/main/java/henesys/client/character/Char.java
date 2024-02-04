@@ -1,5 +1,6 @@
 package henesys.client.character;
 
+import henesys.Server;
 import henesys.client.Account;
 import henesys.client.Client;
 import henesys.client.character.avatar.AvatarLook;
@@ -25,6 +26,8 @@ import henesys.util.FileTime;
 import henesys.util.Position;
 import henesys.world.field.Field;
 import henesys.world.field.Portal;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -33,6 +36,7 @@ import static henesys.enums.InventoryOperation.Add;
 import static henesys.enums.InventoryOperation.UpdateQuantity;
 
 public class Char {
+    private static final Logger log = LogManager.getLogger(Char.class);
 
     private int id;
     private int accountId;
@@ -126,7 +130,11 @@ public class Char {
     }
 
     public void logout() {
-        // TODO: implement
+        log.info("Logging out {}", getCharacterStat().getName());
+        getField().removeChar(this);
+        getClient().getUser().setCurrentChr(null);
+        getClient().getChannelInstance().removeChar(this);
+        getClient().setChr(null);
     }
 
     /**

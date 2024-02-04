@@ -73,10 +73,8 @@ public class Npc extends Life {
     @Override
     public void broadcastSpawnPacket(Char onlyChar) {
         Field field = getField();
-        Char controller = field.getLifeToControllers().get(this);
         for (Char chr : field.getChars()) {
             chr.getClient().write(NpcPool.npcEnterField(this));
-            chr.getClient().write(NpcPool.npcChangeController(this, chr == controller, false));
         }
     }
 }

@@ -40,6 +40,7 @@ public class MigrationHandler {
             chr = acc.getCharById(charId);
         }
         chr.setClient(c);
+        c.getChannelInstance().addChar(chr);
         c.setChr(chr);
         Field field = chr.getOrCreateFieldByCurrentInstanceType(chr.getCharacterStat().getFieldId() <= 0 ? 100000000 : chr.getCharacterStat().getFieldId());
         chr.warp(field, field.getPortalByName("sp"), true, true);
