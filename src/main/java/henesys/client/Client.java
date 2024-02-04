@@ -26,8 +26,6 @@ public class Client extends NettyClient {
 	private Channel channelInstance;
 	private byte[] machineID;
 	private byte oldChannel;
-	private ScheduledFuture<?> channelSendAlive;
-	private ScheduledFuture<?> loginSendAlive;
 
 	public Client(io.netty.channel.Channel channel, byte[] sendSeq, byte[] recvSeq) {
 		super(channel, sendSeq, recvSeq);
@@ -120,21 +118,5 @@ public class Client extends NettyClient {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-    public ScheduledFuture<?> getChannelSendAlive() {
-        return channelSendAlive;
-    }
-
-    public void setChannelSendAlive(ScheduledFuture<?> channelSendAlive) {
-        this.channelSendAlive = channelSendAlive;
-    }
-
-	public ScheduledFuture<?> getLoginSendAlive() {
-		return loginSendAlive;
-	}
-
-	public void setLoginSendAlive(ScheduledFuture<?> loginSendAlive) {
-		this.loginSendAlive = loginSendAlive;
 	}
 }

@@ -6,10 +6,7 @@ import henesys.client.Client;
 import henesys.client.character.avatar.AvatarLook;
 import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.connection.OutPacket;
-import henesys.connection.packet.Stage;
-import henesys.connection.packet.UserLocal;
-import henesys.connection.packet.UserRemote;
-import henesys.connection.packet.WvsContext;
+import henesys.connection.packet.*;
 import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
 import henesys.constants.SkillConstants;
@@ -24,11 +21,14 @@ import henesys.loaders.ItemData;
 import henesys.skills.Skill;
 import henesys.util.FileTime;
 import henesys.util.Position;
+import henesys.world.Channel;
+import henesys.world.World;
 import henesys.world.field.Field;
 import henesys.world.field.Portal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.Inet4Address;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -700,6 +700,18 @@ public class Char {
             default:
                 return null;
         }
+    }
+
+    public void changeChannel(byte channelId) {
+        logout();
+        setChangingChannel(true);
+        getField().removeChar(this);;
+        int worldID = getClient().getWorldId();
+        World world = Server.getInstance().getWorldById(worldID);
+
+        Channel channel = world.getChannelById(channelId);
+        channel.addClientInTransfer(channelId, getId(), getClient());
+        getClient().write(ClientSocket.migrateCommand(true, Inet4Address.getLoopbackAddress().getAddress(), channel.getPort()));
     }
 
     /**

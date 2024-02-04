@@ -40,6 +40,8 @@ public class LoginHandler {
     public static void handleCheckPassword(Client c, InPacket inPacket) {
         String username = inPacket.decodeString();
         String password = inPacket.decodeString();
+        inPacket.decodeShort();
+        byte[] machineID = inPacket.decodeArr(16);
         UserDao userDao = new UserDao();
         User user = userDao.findByUsername(username);
         if (user == null) {
@@ -59,6 +61,7 @@ public class LoginHandler {
                 return;
             }
             c.setUser(user);
+            c.setMachineID(machineID);
             c.write(Login.checkPasswordResult(LoginType.Success, c.getUser()));
         }
     }
@@ -79,7 +82,7 @@ public class LoginHandler {
 
     @Handler(op = InHeader.SELECT_WORLD)
     public static void handleSelectWorld(Client c, InPacket inPacket) {
-        byte unk = inPacket.decodeByte();
+        byte loginType = inPacket.decodeByte();
         byte worldId = inPacket.decodeByte();
         byte channel = (byte) (inPacket.decodeByte() + 1);
         User user = c.getUser();

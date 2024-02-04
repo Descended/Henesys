@@ -10,6 +10,7 @@ import henesys.util.container.Tuple;
 import henesys.world.field.Field;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -25,30 +26,16 @@ public class Channel {
     private List<Field> fields;
 
     private Map<Integer, Tuple<Byte, Client>> transfers;
-    private Map<Integer, Char> chars = new HashMap<>();
+    private Map<Integer, Char> chars = new ConcurrentHashMap<>();
     public final int MAX_SIZE = 1000;
-    private Channel(String name, World world, int channelId, boolean adultChannel) {
-        this.name = name;
-        this.worldId = world.getWorldId();
-        this.channelId = channelId;
-        this.adultChannel = adultChannel;
-        this.port = ServerConstants.LOGIN_PORT + 100 + channelId;
-        this.fields = new CopyOnWriteArrayList<>();
-        this.transfers = new HashMap<>();
-    }
-
-    public Channel(World world, int channelId) {
-        this(world.getName() + "-" + channelId, world, channelId, false);
-    }
-
     public Channel(String worldName, int worldId, int channelId) {
         this.name = worldName + "-" + channelId;
         this.worldId = worldId;
         this.channelId = channelId;
         this.adultChannel = false;
-        this.port = ServerConstants.LOGIN_PORT + (100 * worldId) + channelId;
+        this.port = ServerConstants.LOGIN_PORT + (100 * worldId ) + channelId;
         this.fields = new CopyOnWriteArrayList<>();
-        this.transfers = new HashMap<>();
+        this.transfers = new ConcurrentHashMap<>();
     }
 
     public List<Field> getFields() {
@@ -125,5 +112,16 @@ public class Channel {
             }
         }
         return createAndReturnNewField(id);
+    }
+
+    public void addChar(Char chr) {
+        getChars().put(chr.getId(), chr);
+    }
+    public void removeChar(Char chr) {
+        getChars().remove(chr.getId());
+    }
+
+    public Map<Integer, Char> getChars() {
+        return chars;
     }
 }

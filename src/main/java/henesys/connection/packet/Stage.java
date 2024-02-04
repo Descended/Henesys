@@ -15,7 +15,7 @@ public class Stage {
     public static OutPacket setField(Char chr, Field field, int portalId, int channelId, int worldId, boolean characterData) {
         OutPacket outPacket = new OutPacket(OutHeader.SET_FIELD);
         outPacket.encodeShort(0); // Client option
-        outPacket.encodeInt(channelId);
+        outPacket.encodeInt(channelId - 1); // Channel starts at 0 in SET_FIELD
         outPacket.encodeInt(worldId);
 
         outPacket.encodeByte(1); // sNotifierMessage.m_pStr

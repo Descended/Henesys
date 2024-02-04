@@ -76,10 +76,6 @@ public class ChannelHandler extends SimpleChannelInboundHandler<InPacket> {
         User user = c.getUser();
         Char chr = c.getChr();
 
-        if (c.getLoginSendAlive() != null){
-            c.getLoginSendAlive().cancel(true);
-        }
-
         if (chr != null){
             if (!chr.isChangingChannel() && !chr.isInCashShop()) {
                 chr.logout();

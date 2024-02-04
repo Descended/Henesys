@@ -334,7 +334,6 @@ public enum OutHeader {
     MOB_ATTACKED_BY_MOB(309),
     END_MOB(309),
     END_MOBPOOL(310),
-    BEGIN_NPCPOOL(311),
     NPC_ENTER_FIELD(311),
     NPC_LEAVE_FIELD(312),
     NPC_CHANGE_CONTROLLER(313),
@@ -511,7 +510,7 @@ public enum OutHeader {
 
 
     private static final List<OutHeader> spam = List.of(
-            ALIVE_REQ
+            ALIVE_REQ,
 //            PRIVATE_SERVER_PACKET,
 //            MOB_CONTROL_ACK,
 //            CHAT_MSG,
@@ -526,7 +525,7 @@ public enum OutHeader {
 //            DROP_LEAVE_FIELD,
 //            TEMPORARY_STAT_RESET,
 //            PET_MOVE,
-//            NPC_ENTER_FIELD,
+            NPC_ENTER_FIELD,
 //            NPC_CHANGE_CONTROLLER,
 //            MOB_ENTER_FIELD,
 //            RESULT_INSTANCE_TABLE,
@@ -534,8 +533,7 @@ public enum OutHeader {
 //            DROP_ENTER_FIELD,
 //            MOB_LEAVE_FIELD,
 //            ANDROID_MOVE,
-//            MESSAGE,
-//            FOX_MAN_MOVE,
+            MESSAGE
 //            SKILL_PET_MOVE,
 //            MOB_FORCE_CHASE,
 //            AFFECTED_AREA_CREATED,
