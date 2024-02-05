@@ -1,15 +1,20 @@
 package henesys.life.mob;
 
+import henesys.client.character.Char;
+import henesys.connection.OutPacket;
+import henesys.connection.packet.MobPool;
+import henesys.enums.MobControllerType;
 import henesys.life.DeathType;
 import henesys.life.Life;
 import henesys.life.mob.skill.MobSkill;
+import henesys.world.field.Field;
 import henesys.world.field.Foothold;
 
 import java.util.*;
 
 public class Mob extends Life {
 
-    private byte calcDamageIndex = 1;
+    private byte calcDamageIndex;
     private Foothold curFoodhold;
     private ForcedMobStat forcedMobStat;
     private MobTemporaryStat temporaryStat;
@@ -45,6 +50,9 @@ public class Mob extends Life {
     private int coolDamageProb;
     private int coolDamage;
     private int firstAttack;
+    private Char controller;
+
+    private byte appearType = -1; // TODO: MobSummonType
 
     private int currentAction = -1;
     private int afterAttack = -1;
@@ -436,5 +444,62 @@ public class Mob extends Life {
 
     public void setFirstAttack(int firstAttack) {
         this.firstAttack = firstAttack;
+    }
+
+    public Char getController() {
+        return controller;
+    }
+
+    public void setController(Char controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void broadcastSpawnPacket(Char onlyChar) {
+        Field field = getField();
+        for (Char chr : field.getChars()) {
+            chr.getClient().write(MobPool.enterField(this));
+            setController(controller);
+            chr.getClient().write(MobPool.mobChangeController(this, MobControllerType.ActiveInit));
+        }
+    }
+
+    public void encode(OutPacket outPacket) {
+        //CMob::SetTemporaryStat
+        //Temp stats
+        this.getTemporaryStat().encode(outPacket);
+
+        //CMob::Init
+        outPacket.encodePosition(getPosition()); //m_ptPosPrev.x | m_ptPosPrev.y
+        outPacket.encodeByte(getMoveAction());
+        outPacket.encodeShort(getFh()); //  m_nFootholdSN
+        outPacket.encodeShort(getFh()); //  m_nHomeFoothold
+        outPacket.encodeByte(appearType);
+
+//        if (appearType == MobSummonType.Revived || appearType.getVal() >= 0) {
+//            outPacket.encodeInt(option); // summon option
+//        }
+        outPacket.encodeByte(0xFF); // getTeamForMCarnival()
+        outPacket.encodeInt(0); // nEffectItemID
+        outPacket.encodeInt(0); // m_nPhase
+    }
+
+    public byte getAppearType() {
+        return appearType;
+    }
+
+    public void setAppearType(byte appearType) {
+        this.appearType = appearType;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + getObjectId() +
+                " | Hp: " + hp + "/" + maxHp +
+                " | Mp: " + mp + "/" + maxMp +
+                " | Lvl: " + getForcedMobStat().getLevel() +
+                " | Exp: " + getForcedMobStat().getExp() +
+                " | Controller: " + controller.getId() +
+                " | Pos: " + getPosition();
     }
 }

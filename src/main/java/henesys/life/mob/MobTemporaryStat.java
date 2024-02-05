@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 public class MobTemporaryStat {
+    private List<BurnedInfo> burnedInfoList = new ArrayList<>();
     private Comparator<MobStat> mobStatComper = (o1, o2) -> {
         int res = 0;
         if (o1.getPos() < o2.getPos()) {
@@ -54,97 +55,47 @@ public class MobTemporaryStat {
     }
 
     public void encode(OutPacket outPacket) {
-        synchronized (currentStatVals) {
-            // DecodeBuffer(12) + MobStat::DecodeTemporary
-            int[] mask = getNewMask();
-            for (int i = 0; i < mask.length; i++) {
-                outPacket.encodeInt(mask[i]);
-            }
-
-            for (Map.Entry<MobStat, Option> entry : getNewStatVals().entrySet()) {
-                MobStat mobStat = entry.getKey();
-                Option option = entry.getValue();
-                switch (mobStat) {
-                    case PAD:
-                    case PDR:
-                    case MAD:
-                    case MDR:
-                    case ACC:
-                    case EVA:
-                    case Speed:
-                    case Stun:
-                    case Freeze:
-                    case Poison:
-                    case Seal:
-                    case Darkness:
-                    case PowerUp:
-                    case MagicUp:
-                    case PGuardUp:
-                    case MGuardUp:
-                    case PImmune:
-                    case MImmune:
-                    case Web:
-                    case HardSkin:
-                    case Ambush:
-                    case Venom:
-                    case Blind:
-                    case SealSkill:
-                    case Dazzle:
-                    case PCounter:
-                    case MCounter:
-                    case RiseByToss:
-                    case BodyPressure:
-                    case Weakness:
-                    case Showdown:
-                    case MagicCrash:
-                    case DamagedElemAttr:
-                        outPacket.encodeInt(getNewOptionsByMobStat(mobStat).nOption);
-                        outPacket.encodeInt(getNewOptionsByMobStat(mobStat).rOption);
-                        outPacket.encodeShort(getNewOptionsByMobStat(mobStat).tOption / 500);
-                }
-            }
-            if (hasNewMobStat(MobStat.PDR)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.PDR).cOption);
-            }
-            if (hasNewMobStat(MobStat.MDR)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.MDR).cOption);
-            }
-            if (hasNewMobStat(MobStat.PCounter)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.PCounter).wOption);
-            }
-            if (hasNewMobStat(MobStat.MCounter)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.MCounter).wOption);
-            }
-            if (hasNewMobStat(MobStat.PCounter)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.PCounter).mOption); // nCounterProb
-                outPacket.encodeByte(getNewOptionsByMobStat(MobStat.PCounter).bOption); // bCounterDelay
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.PCounter).nReason); // nAggroRank
-            } else if (hasNewMobStat(MobStat.MCounter)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.MCounter).mOption); // nCounterProb
-                outPacket.encodeByte(getNewOptionsByMobStat(MobStat.MCounter).bOption); // bCounterDelay
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.MCounter).nReason); // nAggroRank
-            }
-            if (hasNewMobStat(MobStat.Speed)) {
-                outPacket.encodeByte(getNewOptionsByMobStat(MobStat.Speed).mOption);
-            }
-            if (hasNewMobStat(MobStat.Freeze)) {
-                outPacket.encodeInt(getNewOptionsByMobStat(MobStat.Freeze).cOption);
-            }
-            getNewStatVals().clear();
+        int[] mask = getNewMask();
+        for (int i = mask.length - 1; i >= 0; i--) {
+            outPacket.encodeInt(mask[i]);
         }
+
+        for (Map.Entry<MobStat, Option> entry : getNewStatVals().entrySet()) {
+            MobStat mobStat = entry.getKey();
+            Option option = entry.getValue();
+            switch (mobStat) {
+                case Burned:
+                    outPacket.encodeInt(option.nOption);
+                    if (option.nOption > 0) {
+                        for (BurnedInfo bi : getBurnedInfoList()) {
+                            bi.encode(outPacket);
+                        }
+                    }
+                    break;
+                case Disable:
+                    outPacket.encodeByte(false); // bInvincible
+                    outPacket.encodeByte(false); // bDisable
+                    break;
+                case PCounter:
+                case MCounter:
+                    outPacket.encodeShort(option.nOption);
+                    outPacket.encodeInt(option.rOption);
+                    outPacket.encodeShort(option.tOption / 500);
+                    outPacket.encodeInt(option.nOption);
+                default:
+                    outPacket.encodeShort(option.nOption);
+                    outPacket.encodeInt(option.rOption);
+                    outPacket.encodeShort(option.tOption / 500);
+            }
+        }
+        getNewStatVals().clear();
     }
 
     private int[] getMaskByCollection(Map<MobStat, Option> map) {
-        OutPacket outPacket = new OutPacket();
-        int[] res = new int[3];
-        for (MobStat mobStat : map.keySet()) {
-            res[mobStat.getPos()] |= mobStat.getVal();
-        }
-        for (int re : res) {
-            outPacket.encodeInt(re);
-        }
-        outPacket.release();
-        return res;
+        int[] maskArr = new int[4];
+        // Build the mask array by pos -
+        map.keySet().forEach(stat -> maskArr[stat.getPos()] |= stat.getVal());
+        return maskArr;
     }
 
     public int[] getNewMask() {
@@ -303,5 +254,13 @@ public class MobTemporaryStat {
     public void removeEverything() {
         Set<MobStat> mobStats = new HashSet<>(getCurrentStatVals().keySet());
         mobStats.forEach(ms -> removeMobStat(ms, false));
+    }
+
+    public List<BurnedInfo> getBurnedInfoList() {
+        return burnedInfoList;
+    }
+
+    public void setBurnedInfoList(List<BurnedInfo> burnedInfoList) {
+        this.burnedInfoList = burnedInfoList;
     }
 }

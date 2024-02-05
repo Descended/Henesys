@@ -5,6 +5,7 @@ import henesys.constants.GameConstants;
 import henesys.enums.FieldType;
 import henesys.life.Life;
 import henesys.life.Reactor;
+import henesys.life.mob.Mob;
 import henesys.life.npc.Npc;
 import henesys.util.Position;
 import henesys.util.Util;
@@ -569,8 +570,8 @@ public class FieldData {
                 l.setRegenStart(dataInputStream.readInt());
                 l.setMobAliveReq(dataInputStream.readInt());
                 if ("m".equalsIgnoreCase(l.getLifeType())) {
-//                    MobGen mobGen = l.createMobGenFromLife(); TODO
-//                    field.addLife(mobGen);
+                    Mob mob = l.createMobFromLife();
+                    field.addLife(mob);
                 } else if ("n".equalsIgnoreCase(l.getLifeType())) {
                     Npc npc = l.createNpcFromLife();
                     field.addLife(npc);

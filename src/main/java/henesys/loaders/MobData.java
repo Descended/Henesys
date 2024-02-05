@@ -115,30 +115,30 @@ public class MobData {
                 for (int i : mob.getRevives()) {
                     dataOutputStream.writeInt(i);
                 }
-                dataOutputStream.writeShort(mob.getSkills().size());
-                dataOutputStream.writeShort(mob.getAttacks().size());
-                List<MobSkill> all = mob.getSkills();
-                all.addAll(mob.getAttacks());
-                for (MobSkill ms : all) {
-                    dataOutputStream.writeInt(ms.getSkillSN());
-                    dataOutputStream.writeInt(ms.getSkillID());
-                    dataOutputStream.writeByte(ms.getAction());
-                    dataOutputStream.writeInt(ms.getLevel());
-                    dataOutputStream.writeInt(ms.getEffectAfter());
-                    dataOutputStream.writeInt(ms.getSkillAfter());
-                    dataOutputStream.writeBoolean(ms.isOnlyFsm());
-                    dataOutputStream.writeBoolean(ms.isOnlyOtherSkill());
-                    dataOutputStream.writeBoolean(ms.isDoFirst());
-                    dataOutputStream.writeBoolean(ms.isAfterDead());
-                    dataOutputStream.writeInt(ms.getAfterAttack());
-                    dataOutputStream.writeInt(ms.getAfterAttackCount());
-                    dataOutputStream.writeInt(ms.getAfterDelay());
-                    dataOutputStream.writeInt(ms.getFixDamR());
-                    dataOutputStream.writeInt(ms.getCoolTime());
-                    dataOutputStream.writeUTF(ms.getInfo());
-                    dataOutputStream.writeUTF(ms.getSpeak());
-                }
-                dataOutputStream.writeInt(mts.getNewOptionsByMobStat(MobStat.PImmune) != null ? mts.getNewOptionsByMobStat(MobStat.PImmune).nOption : 0);
+//                dataOutputStream.writeShort(mob.getSkills().size());
+//                dataOutputStream.writeShort(mob.getAttacks().size());
+//                List<MobSkill> all = mob.getSkills();
+//                all.addAll(mob.getAttacks());
+//                for (MobSkill ms : all) {
+//                    dataOutputStream.writeInt(ms.getSkillSN());
+//                    dataOutputStream.writeInt(ms.getSkillID());
+//                    dataOutputStream.writeByte(ms.getAction());
+//                    dataOutputStream.writeInt(ms.getLevel());
+//                    dataOutputStream.writeInt(ms.getEffectAfter());
+//                    dataOutputStream.writeInt(ms.getSkillAfter());
+//                    dataOutputStream.writeBoolean(ms.isOnlyFsm());
+//                    dataOutputStream.writeBoolean(ms.isOnlyOtherSkill());
+//                    dataOutputStream.writeBoolean(ms.isDoFirst());
+//                    dataOutputStream.writeBoolean(ms.isAfterDead());
+//                    dataOutputStream.writeInt(ms.getAfterAttack());
+//                    dataOutputStream.writeInt(ms.getAfterAttackCount());
+//                    dataOutputStream.writeInt(ms.getAfterDelay());
+//                    dataOutputStream.writeInt(ms.getFixDamR());
+//                    dataOutputStream.writeInt(ms.getCoolTime());
+//                    dataOutputStream.writeUTF(ms.getInfo());
+//                    dataOutputStream.writeUTF(ms.getSpeak());
+//                }
+//                dataOutputStream.writeInt(mts.getNewOptionsByMobStat(MobStat.PImmune) != null ? mts.getNewOptionsByMobStat(MobStat.PImmune).nOption : 0);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -211,36 +211,36 @@ public class MobData {
             for (int i = 0; i < size; i++) {
                 mob.addRevive(dataInputStream.readInt());
             }
-            short skillSize = dataInputStream.readShort();
-            short attackSize = dataInputStream.readShort();
-            for (int i = 0; i < skillSize + attackSize; i++) {
-                MobSkill ms = new MobSkill();
-                ms.setSkillSN(dataInputStream.readInt());
-                ms.setSkillID(dataInputStream.readInt());
-                ms.setAction(dataInputStream.readByte());
-                ms.setLevel(dataInputStream.readInt());
-                ms.setEffectAfter(dataInputStream.readInt());
-                ms.setSkillAfter(dataInputStream.readInt());
-                ms.setOnlyFsm(dataInputStream.readBoolean());
-                ms.setOnlyOtherSkill(dataInputStream.readBoolean());
-                ms.setDoFirst(dataInputStream.readBoolean());
-                ms.setAfterDead(dataInputStream.readBoolean());
-                ms.setAfterAttack(dataInputStream.readInt());
-                ms.setAfterAttackCount(dataInputStream.readInt());
-                ms.setAfterDelay(dataInputStream.readInt());
-                ms.setFixDamR(dataInputStream.readInt());
-                ms.setCoolTime(dataInputStream.readInt());
-                ms.setInfo(dataInputStream.readUTF());
-                ms.setSpeak(dataInputStream.readUTF());
-                if (i < skillSize) {
-                    mob.addSkill(ms);
-                } else {
-                    mob.addAttack(ms);
-                }
-            }
-
-            Option pImmuneOpt = new Option();
-            pImmuneOpt.nOption = dataInputStream.readInt();
+//            short skillSize = dataInputStream.readShort();
+//            short attackSize = dataInputStream.readShort();
+//            for (int i = 0; i < skillSize + attackSize; i++) {
+//                MobSkill ms = new MobSkill();
+//                ms.setSkillSN(dataInputStream.readInt());
+//                ms.setSkillID(dataInputStream.readInt());
+//                ms.setAction(dataInputStream.readByte());
+//                ms.setLevel(dataInputStream.readInt());
+//                ms.setEffectAfter(dataInputStream.readInt());
+//                ms.setSkillAfter(dataInputStream.readInt());
+//                ms.setOnlyFsm(dataInputStream.readBoolean());
+//                ms.setOnlyOtherSkill(dataInputStream.readBoolean());
+//                ms.setDoFirst(dataInputStream.readBoolean());
+//                ms.setAfterDead(dataInputStream.readBoolean());
+//                ms.setAfterAttack(dataInputStream.readInt());
+//                ms.setAfterAttackCount(dataInputStream.readInt());
+//                ms.setAfterDelay(dataInputStream.readInt());
+//                ms.setFixDamR(dataInputStream.readInt());
+//                ms.setCoolTime(dataInputStream.readInt());
+//                ms.setInfo(dataInputStream.readUTF());
+//                ms.setSpeak(dataInputStream.readUTF());
+//                if (i < skillSize) {
+//                    mob.addSkill(ms);
+//                } else {
+//                    mob.addAttack(ms);
+//                }
+//            }
+//
+//            Option pImmuneOpt = new Option();
+//            pImmuneOpt.nOption = dataInputStream.readInt();
 //            mts.addStatOptions(PImmune, pImmuneOpt);
 
             mob.setMoveAction((byte) 5); // normal monster?
@@ -271,14 +271,10 @@ public class MobData {
 
     public static void loadMobsFromWz() {
         String wzDir1 = ServerConstants.WZ_DIR + "/Mob.wz";
-        String wzDir2 = ServerConstants.WZ_DIR + "/Mob2.wz";
         File dir1 = new File(wzDir1);
         File[] files1 = dir1.listFiles();
-        File dir2 = new File(wzDir2);
-        File[] files2 = dir2.listFiles();
         List<File> files = new ArrayList<>();
         files.addAll(Arrays.asList(files1));
-        files.addAll(Arrays.asList(files2));
         for (File file : files) {
             if (file.isDirectory()) {
                 continue;

@@ -2,6 +2,7 @@ package henesys.connection.packet;
 
 
 import henesys.connection.OutPacket;
+import henesys.enums.MobControllerType;
 import henesys.handlers.header.OutHeader;
 import henesys.life.DeathType;
 import henesys.life.mob.ForcedMobStat;
@@ -12,46 +13,30 @@ import henesys.util.Position;
  * Created on 2/28/2018.
  */
 public class MobPool {
-    public static OutPacket enterField(Mob mob, boolean hasBeenInit) {
+    public static OutPacket enterField(Mob mob) {
         OutPacket outPacket = new OutPacket(OutHeader.MOB_ENTER_FIELD);
 
         outPacket.encodeInt(mob.getObjectId());
-        outPacket.encodeByte(mob.getCalcDamageIndex());
+        outPacket.encodeByte(5);
         outPacket.encodeInt(mob.getTemplateId());
-        ForcedMobStat fms = mob.getForcedMobStat();
-        outPacket.encodeByte(fms != null);
-        if (fms != null) {
-            fms.encode(outPacket);
-        }
-        mob.getTemporaryStat().encode(outPacket);
-        if (!hasBeenInit) {
-            // CMob::Init
-//            mob.encodeInit(outPacket);
-        }
+        mob.encode(outPacket);
         return outPacket;
     }
 
-    public static OutPacket changeController(Mob mob, boolean hasBeenInit, boolean isController) {
+    public static OutPacket mobChangeController(Mob mob, MobControllerType mobCtrlType) {
         OutPacket outPacket = new OutPacket(OutHeader.MOB_CHANGE_CONTROLLER);
-        outPacket.encodeByte(isController);
-        outPacket.encodeInt(mob.getObjectId());
-        if (isController) {
-            outPacket.encodeByte(mob.getCalcDamageIndex());
-            outPacket.encodeInt(mob.getTemplateId());
-            ForcedMobStat fms = mob.getForcedMobStat();
-            outPacket.encodeByte(fms != null);
-            if (fms != null) {
-                fms.encode(outPacket);
-            }
-            mob.getTemporaryStat().encode(outPacket);
-            if (!hasBeenInit) {
-//                mob.encodeInit(outPacket);
-            }
-        }
 
+        outPacket.encodeByte(mobCtrlType.getVal()); // 0 = None | 1 = Control | 2 = Aggro
+        outPacket.encodeInt(mob.getObjectId());
+
+        if(mobCtrlType.getVal() > MobControllerType.Reset.getVal()){
+            outPacket.encodeByte(5); // nCalcDamageIndex | Controller
+            outPacket.encodeInt(mob.getTemplateId());
+            // Encode mob data -
+            mob.encode(outPacket);
+        }
         return outPacket;
     }
-
     public static OutPacket leaveField(int id, DeathType deadType) {
         OutPacket outPacket = new OutPacket(OutHeader.MOB_LEAVE_FIELD);
 
