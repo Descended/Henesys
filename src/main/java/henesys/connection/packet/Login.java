@@ -61,7 +61,7 @@ public class Login {
             outPacket.encodeInt(user.getId());
             outPacket.encodeByte(user.getGender());
             outPacket.encodeByte(user.getAccountMode());
-            outPacket.encodeShort(user.getUserType().getVal());
+            outPacket.encodeShort(user.getUserType().getLvl());
             outPacket.encodeByte(0); // nCountryId
             outPacket.encodeString(user.getUsername());
             outPacket.encodeByte(0); // nPurchaseExp

@@ -1,27 +1,27 @@
 package henesys.enums;
 
+import java.util.Arrays;
+
 public enum UserType {
-    Player(0),
-    Tester(1 << 5),
-    Intern(1 << 3),
-    GameMaster(1 << 4),
-    Admin(1 << 4);
+    Player(0, 0),
+    Tester(1, 0x100),
+    Intern(2, 0),
+    GameMaster(3, 0x40),
+    Admin(5, 0x80);
 
-    private final int val;
+    private final int lvl;
+    private final byte subGrade;
 
-    UserType(int val) {
-        this.val = val;
+    UserType(int lvl, int subGrade) {
+        this.lvl = lvl;
+        this.subGrade = (byte) subGrade;
     }
 
-    public static UserType getByVal(int val) {
-        for (UserType type : values()) {
-            if (type.getVal() == val) {
-                return type;
-            }
-        }
-        return null;
+    public static UserType getTypeByLvl(int lvl){
+        return Arrays.stream(values()).filter(userType -> userType.getLvl() == lvl).findFirst().orElse(Player);
     }
-    public int getVal() {
-        return val;
+
+    public int getLvl() {
+        return lvl;
     }
 }

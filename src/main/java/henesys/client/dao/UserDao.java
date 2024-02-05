@@ -29,7 +29,7 @@ public class UserDao {
                 user.setVotePoints(rs.getInt("votePoints"));
                 user.setDonationPoints(rs.getInt("donationPoints"));
                 user.setMaplePoints(rs.getInt("maplePoints"));
-                user.setUserType(UserType.getByVal(rs.getInt("userType")));
+                user.setUserType(UserType.getTypeByLvl(rs.getInt("userType")));
                 user.setBirthDate(rs.getDate("birthDate"));
                 user.setCharacterSlots(rs.getInt("characterSlots"));
             }
@@ -55,7 +55,7 @@ public class UserDao {
             statement.setInt(9, user.getVotePoints());
             statement.setInt(10, user.getDonationPoints());
             statement.setInt(11, user.getMaplePoints());
-            statement.setInt(12, user.getUserType().getVal());
+            statement.setInt(12, user.getUserType().getLvl());
             statement.setDate(13, user.getBirthDate());
             statement.setInt(14, user.getCharacterSlots());
             statement.executeUpdate();

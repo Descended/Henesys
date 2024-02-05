@@ -15,11 +15,6 @@ import java.util.TreeMap;
 
 public class WvsContext {
 
-    public static OutPacket exclRequest() {
-//        return new OutPacket(OutHeader.EXCL_REQUEST);
-        return null;
-    }
-
     public static OutPacket statChanged(Map<Stat, Object> stats, boolean exclRequestSent) {
         OutPacket outPacket = new OutPacket(OutHeader.STAT_CHANGED);
         outPacket.encodeByte(exclRequestSent);

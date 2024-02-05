@@ -57,7 +57,6 @@ public class Field {
     private Map<String, Object> properties;
     private boolean changeToChannelOnLeave;
     private boolean dropsDisabled;
-    private ScheduledFuture<?> generateMobsEvent;
     public Field(int fieldID) {
         this.id = fieldID;
         this.rect = new Rect();
@@ -502,15 +501,6 @@ public class Field {
     public boolean isDropsDisabled() {
         return dropsDisabled;
     }
-
-    public ScheduledFuture<?> getGenerateMobsEvent() {
-        return generateMobsEvent;
-    }
-
-    public void setGenerateMobsEvent(ScheduledFuture<?> generateMobsEvent) {
-        this.generateMobsEvent = generateMobsEvent;
-    }
-
     public Foothold getFootholdById(int fh) {
         return getFootholds().stream().filter(f -> f.getId() == fh).findFirst().orElse(null);
     }
