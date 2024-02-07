@@ -67,7 +67,8 @@ public class Field {
         this.lifeToControllers = new HashMap<>();
         this.fixedMobCapacity = GameConstants.DEFAULT_FIELD_MOB_CAPACITY; // default
         this.properties = new HashMap<>();
-        dropsDisabled = false;
+        this.dropsDisabled = false;
+
     }
 
     public void startFieldScript() {

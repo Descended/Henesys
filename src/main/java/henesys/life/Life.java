@@ -3,6 +3,7 @@ package henesys.life;
 import henesys.client.character.Char;
 import henesys.life.mob.Mob;
 import henesys.life.npc.Npc;
+import henesys.loaders.MobData;
 import henesys.loaders.NpcData;
 import henesys.util.Position;
 import henesys.world.field.Field;
@@ -254,7 +255,7 @@ public class Life {
     public Mob createMobFromLife() {
         Mob mob = null;
         if ("m".equalsIgnoreCase(getLifeType())) {
-            mob = new Mob(getTemplateId());
+            mob = MobData.getMobById(getTemplateId());
             mob.setObjectId(getObjectId());
             mob.setLifeType(getLifeType());
             mob.setX(getX());
