@@ -107,6 +107,92 @@ public class Mob extends Life {
         calcDamageIndex = 1;
     }
 
+    public Mob deepCopy() {
+        Mob copy = new Mob(getTemplateId());
+        // start life
+        copy.setObjectId(getObjectId());
+        copy.setLifeType(getLifeType());
+        copy.setTemplateId(getTemplateId());
+        copy.setX(getX());
+        copy.setY(getY());
+        copy.setMobTime(getMobTime());
+        copy.setFlip(isFlip());
+        copy.setHide(isHide());
+        copy.setFh(getFh());
+        copy.setCy(getCy());
+        copy.setRx0(getRx0());
+        copy.setRx1(getRx1());
+        copy.setLimitedName(getLimitedName());
+        copy.setHold(isHold());
+        copy.setNoFoothold(isNoFoothold());
+        copy.setDummy(isDummy());
+        copy.setMobTimeOnDie(isMobTimeOnDie());
+        copy.setRegenStart(getRegenStart());
+        copy.setMobAliveReq(getMobAliveReq());
+        // end life
+        copy.setHp(getHp());
+        copy.setMaxHp(getMaxHp());
+        copy.setCalcDamageIndex(getCalcDamageIndex());
+        copy.setMoveAction(getMoveAction());
+        copy.setAppearType(getAppearType());
+        if (getCurFoodhold() != null) {
+            copy.setCurFoodhold(getCurFoodhold().deepCopy());
+        }
+        if (getForcedMobStat() != null) {
+            copy.setForcedMobStat(getForcedMobStat().deepCopy());
+        }
+        if (getTemporaryStat() != null) {
+            copy.setTemporaryStat(getTemporaryStat().deepCopy());
+        }
+        copy.setFirstAttack(getFirstAttack());
+        copy.setSummonType(getSummonType());
+        copy.setMobType(getMobType());
+        copy.setFs(getFs());
+        copy.setElemAttr(getElemAttr());
+        copy.setHpTagColor(getHpTagColor());
+        copy.setHpTagBgcolor(getHpTagBgcolor());
+        copy.setHPgaugeHide(isHPgaugeHide());
+        copy.setRareItemDropLevel(getRareItemDropLevel());
+        copy.setBoss(isBoss());
+        copy.setHpRecovery(getHpRecovery());
+        copy.setMpRecovery(getMpRecovery());
+        copy.setUndead(isUndead());
+        copy.setMbookID(getMbookID());
+        copy.setNoRegen(isNoRegen());
+        copy.setChaseSpeed(getChaseSpeed());
+        copy.setExplosiveReward(getExplosiveReward());
+        copy.setFlySpeed(getFlySpeed());
+        copy.setInvincible(isInvincible());
+        copy.setHideName(isHideName());
+        copy.setHideHP(isHideHP());
+        copy.setNoFlip(isNoFlip());
+        copy.setPublicReward(isPublicReward());
+        copy.setIgnoreFieldOut(isIgnoreFieldOut());
+        copy.setSummonEffect(getSummonEffect());
+        copy.setFixedDamage(getFixedDamage());
+        copy.setRemoveAfter(getRemoveAfter());
+        copy.setNoDoom(isNoDoom());
+        copy.setKnockback(isKnockback());
+        copy.setRemoveQuest(isRemoveQuest());
+        copy.setCoolDamageProb(getCoolDamageProb());
+        copy.setCoolDamage(getCoolDamage());
+        copy.setMp(getMp());
+        copy.setMaxMp(getMaxMp());
+        copy.setReviveRespawnDelays(getReviveRespawnDelays());
+        for (MobSkill ms : getSkills()) {
+            copy.addSkill(ms);
+        }
+        for (MobSkill ms : getAttacks()) {
+            copy.addAttack(ms);
+        }
+        for (int rev : getRevives()) {
+            copy.addRevive(rev);
+        }
+        copy.setEscortMob(isEscortMob());
+        return copy;
+    }
+
+
     public byte getCalcDamageIndex() {
         return calcDamageIndex;
     }
@@ -479,7 +565,7 @@ public class Mob extends Life {
 //        if (appearType == MobSummonType.Revived || appearType.getVal() >= 0) {
 //            outPacket.encodeInt(option); // summon option
 //        }
-        outPacket.encodeByte(0xFF); // getTeamForMCarnival()
+        outPacket.encodeByte(0); // getTeamForMCarnival()
         outPacket.encodeInt(0); // nEffectItemID
         outPacket.encodeInt(0); // m_nPhase
     }

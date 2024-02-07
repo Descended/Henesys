@@ -17,7 +17,7 @@ public class MobPool {
         OutPacket outPacket = new OutPacket(OutHeader.MOB_ENTER_FIELD);
 
         outPacket.encodeInt(mob.getObjectId());
-        outPacket.encodeByte(5);
+        outPacket.encodeByte(1);
         outPacket.encodeInt(mob.getTemplateId());
         mob.encode(outPacket);
         return outPacket;

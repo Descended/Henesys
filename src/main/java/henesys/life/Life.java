@@ -255,7 +255,7 @@ public class Life {
     public Mob createMobFromLife() {
         Mob mob = null;
         if ("m".equalsIgnoreCase(getLifeType())) {
-            mob = MobData.getMobById(getTemplateId());
+            mob = MobData.getMobDeepCopyById(getTemplateId());
             mob.setObjectId(getObjectId());
             mob.setTemplateId(getTemplateId());
             mob.setLifeType(getLifeType());

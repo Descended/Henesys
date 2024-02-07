@@ -43,13 +43,21 @@ public class MobData {
         saveToFile(ServerConstants.DAT_DIR + "/mobs");
         log.info(String.format("Completed generating mob data in %dms.", System.currentTimeMillis() - start));
     }
-
     public static Mob getMobById(int id) {
         Mob mob = getMobs().get(id);
         if (mob == null) {
             mob = loadMobFromFile(id);
         }
         return mob;
+    }
+
+    public static Mob getMobDeepCopyById(int id) {
+        Mob from = getMobById(id);
+        Mob copy = null;
+        if (from != null) {
+            copy = from.deepCopy();
+        }
+        return copy;
     }
     private static void saveToFile(String dir) {
         Util.makeDirIfAbsent(dir);
