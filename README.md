@@ -27,3 +27,5 @@ This project uses the following dependencies:
 ## Credits
 * [Swordie](https://bitbucket.org/swordiemen/swordie/src/master/) - Lots of referencing from here
 * [Edelstein](https://github.com/Kaioru/Edelstein) - Packet Referencing from here
+* [Rebirth] - Packet referencing from here (Original Repository deleted)
+* [SpringStory](https://github.com/Kaioru/Doriyan) - Some referencing from here
