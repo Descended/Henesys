@@ -257,6 +257,7 @@ public class Life {
         if ("m".equalsIgnoreCase(getLifeType())) {
             mob = MobData.getMobById(getTemplateId());
             mob.setObjectId(getObjectId());
+            mob.setTemplateId(getTemplateId());
             mob.setLifeType(getLifeType());
             mob.setX(getX());
             mob.setY(getY());

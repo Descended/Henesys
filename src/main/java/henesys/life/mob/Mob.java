@@ -459,8 +459,8 @@ public class Mob extends Life {
         Field field = getField();
         for (Char chr : field.getChars()) {
             chr.getClient().write(MobPool.enterField(this));
-            setController(controller);
-            chr.getClient().write(MobPool.mobChangeController(this, MobControllerType.ActiveInit));
+//            setController(controller);
+//            chr.getClient().write(MobPool.mobChangeController(this, MobControllerType.ActiveInit));
         }
     }
 
@@ -471,9 +471,9 @@ public class Mob extends Life {
 
         //CMob::Init
         outPacket.encodePosition(getPosition()); //m_ptPosPrev.x | m_ptPosPrev.y
-        outPacket.encodeByte(getMoveAction());
+        outPacket.encodeByte(5); // move action
         outPacket.encodeShort(getFh()); //  m_nFootholdSN
-        outPacket.encodeShort(getFh()); //  m_nHomeFoothold
+        outPacket.encodeShort(0); //  m_nHomeFoothold
         outPacket.encodeByte(appearType);
 
 //        if (appearType == MobSummonType.Revived || appearType.getVal() >= 0) {
@@ -499,7 +499,6 @@ public class Mob extends Life {
                 " | Mp: " + mp + "/" + maxMp +
                 " | Lvl: " + getForcedMobStat().getLevel() +
                 " | Exp: " + getForcedMobStat().getExp() +
-                " | Controller: " + controller.getId() +
                 " | Pos: " + getPosition();
     }
 }

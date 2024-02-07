@@ -510,10 +510,8 @@ public class Field {
         if (life.getObjectId() < 0) {
             life.setObjectId(getNewObjectID());
         }
-        if (!getLifes().containsValue(life)) {
-            getLifes().put(life.getObjectId(), life);
-            life.setField(this);
-        }
+        getLifes().put(life.getObjectId(), life);
+        life.setField(this);
     }
 
     public void removeLife(Life life) {
