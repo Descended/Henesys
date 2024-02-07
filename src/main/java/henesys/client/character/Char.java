@@ -705,7 +705,6 @@ public class Char {
     public void changeChannel(byte channelId) {
         logout();
         setChangingChannel(true);
-        getField().removeChar(this);;
         int worldID = getClient().getWorldId();
         World world = Server.getInstance().getWorldById(worldID);
 
