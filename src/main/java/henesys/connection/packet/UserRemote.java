@@ -6,9 +6,18 @@ import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.connection.OutPacket;
 import henesys.enums.AvatarModifiedMask;
 import henesys.handlers.header.OutHeader;
+import henesys.life.movement.MovementInfo;
 import henesys.skills.CharacterTemporaryStat;
 
 public class UserRemote {
+
+    public static OutPacket move(Char chr, MovementInfo movementInfo) {
+        OutPacket outPacket = new OutPacket(OutHeader.USER_MOVE);
+
+        outPacket.encodeInt(chr.getId());
+        outPacket.encode(movementInfo);
+        return outPacket;
+    }
 
     public static OutPacket avatarModified(Char chr, byte mask, byte carryItemEffect) {
         AvatarLook al = chr.getAvatarLook();

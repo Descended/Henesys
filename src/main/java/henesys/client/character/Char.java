@@ -41,7 +41,8 @@ public class Char {
     private int id;
     private int accountId;
     private boolean changingChannel;
-
+    private byte moveAction;
+    private short foothold;
     private int characterStatId;
     private int avatarLookId;
 
@@ -1081,4 +1082,19 @@ public class Char {
         return !items.isEmpty() ? items.getFirst() : null;
     }
 
+    public byte getMoveAction() {
+        return moveAction;
+    }
+
+    public void setMoveAction(byte moveAction) {
+        this.moveAction = moveAction;
+    }
+
+    public short getFoothold() {
+        return foothold;
+    }
+
+    public void setFoothold(short foothold) {
+        this.foothold = foothold;
+    }
 }
