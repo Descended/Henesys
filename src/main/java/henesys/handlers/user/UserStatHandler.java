@@ -31,15 +31,15 @@ public class UserStatHandler {
             isHpOrMp = true;
             amount = 20;
         }
-        chr.addStat(charStat, amount);
+        cs.addStat(charStat, amount);
         cs.setAp((short) (cs.getAp() -1));
         Map<Stat, Object> stats = new HashMap<>();
         if (isHpOrMp) {
-            stats.put(charStat, chr.getStat(charStat));
+            stats.put(charStat, cs.getStat(charStat));
         } else {
-            stats.put(charStat, (short) chr.getStat(charStat));
+            stats.put(charStat, (short) cs.getStat(charStat));
         }
-        stats.put(Stat.ap, (short) chr.getStat(Stat.ap));
+        stats.put(Stat.ap, (short) cs.getStat(Stat.ap));
         c.write(WvsContext.statChanged(stats, true));
     }
 }
