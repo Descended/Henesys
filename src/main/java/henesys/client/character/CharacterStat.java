@@ -2,6 +2,7 @@ package henesys.client.character;
 
 import henesys.connection.OutPacket;
 import henesys.constants.JobConstants;
+import henesys.enums.Stat;
 
 public class CharacterStat {
 
@@ -90,6 +91,104 @@ public class CharacterStat {
         outPacket.encodeInt(getPlayTime());
         outPacket.encodeShort(getSubJob());
 
+    }
+
+    /**
+     * Adds a Stat to this Char.
+     *
+     * @param charStat which Stat to add
+     * @param amount   the amount of Stat to add
+     */
+    public void addStat(Stat charStat, int amount) {
+        setStat(charStat, getStat(charStat) + amount);
+    }
+
+    /**
+     * Gets a raw Stat from this Char, unaffected by things such as equips and skills.
+     *
+     * @param charStat The requested Stat
+     * @return the requested stat's value
+     */
+    public int getStat(Stat charStat) {
+        switch (charStat) {
+            case str:
+                return getStr();
+            case dex:
+                return getDex();
+            case inte:
+                return getIntt();
+            case luk:
+                return getLuk();
+            case hp:
+                return getHp();
+            case mhp:
+                return getMaxHp();
+            case mp:
+                return getMp();
+            case mmp:
+                return getMaxMp();
+            case ap:
+                return getAp();
+            case level:
+                return getLevel();
+            case skin:
+                return getSkin();
+            case face:
+                return getFace();
+            case hair:
+                return getHair();
+            case pop:
+                return getFame();
+            case subJob:
+                return getSubJob();
+        }
+        return -1;
+    }
+    public void setStat(Stat charStat, int amount) {
+        switch (charStat) {
+            case str:
+                setStr((short) amount);
+                break;
+            case dex:
+                setDex((short) amount);
+                break;
+            case inte:
+                setInt((short) amount);
+                break;
+            case luk:
+                setLuk((short) amount);
+                break;
+            case hp:
+                setHp(amount);
+                break;
+            case mhp:
+                setMaxHp(amount);
+                break;
+            case mp:
+                setMp(amount);
+                break;
+            case mmp:
+                setMaxMp(amount);
+                break;
+            case ap:
+                setAp((short) amount);
+                break;
+            case level:
+                setLevel((byte) amount);
+                break;
+            case skin:
+                setSkin((byte) amount);
+                break;
+            case face:
+                setFace(amount);
+                break;
+            case hair:
+                setHair(amount);
+                break;
+            case pop:
+                setFame((short) amount);
+                break;
+        }
     }
 
     public ExtendSP getExtendSP() {
