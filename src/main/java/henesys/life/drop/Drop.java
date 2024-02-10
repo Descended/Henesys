@@ -140,7 +140,7 @@ public class Drop extends Life {
             return false;
         }
         if (isMoney()) {
-            return chr.canAddMoney(getMoney());
+            return chr.getCharacterStat().canAddMoney(getMoney());
         }
         return chr.canHold(item.getItemId(), item.getQuantity());
     }

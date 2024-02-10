@@ -669,13 +669,8 @@ public class Char {
 //        }
 //        setBulletIDForAttack(calculateBulletIDForAttack(1));
     }
-    public boolean canAddMoney(long reqMoney) {
-        return getMoney() + reqMoney > 0 && getMoney() + reqMoney < GameConstants.MAX_MONEY;
-    }
 
-    public long getMoney() {
-        return getCharacterStat().getMoney();
-    }
+
     /**
      * Sends a message to this Char with a given {@link ChatType colour}.
      *

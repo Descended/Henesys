@@ -1,6 +1,7 @@
 package henesys.client.character;
 
 import henesys.connection.OutPacket;
+import henesys.constants.GameConstants;
 import henesys.constants.JobConstants;
 import henesys.enums.Stat;
 
@@ -189,6 +190,10 @@ public class CharacterStat {
                 setFame((short) amount);
                 break;
         }
+    }
+
+    public boolean canAddMoney(long reqMoney) {
+        return getMoney() + reqMoney > 0 && getMoney() + reqMoney < GameConstants.MAX_MONEY;
     }
 
     public ExtendSP getExtendSP() {
