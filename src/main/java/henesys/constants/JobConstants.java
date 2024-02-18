@@ -31,4 +31,46 @@ public class JobConstants {
         return jobId == 2001;
     }
 
+    public static boolean isEvan(short jobId) {
+        return jobId / 100 == 22 || jobId == 2001;
+    }
+    public static int getEvanJobLevel(short jobId) {
+        return switch (jobId) {
+            case 2200, 2210 -> 1;
+            case 2211, 2212, 2213 -> 2;
+            case 2214, 2215, 2216 -> 3;
+            case 2217, 2218 -> 4;
+            default -> 0;
+        };
+    }
+    public static boolean isDualBlade(int job) {
+        return job / 10 == 43;
+    }
+
+    public static boolean isManager(int jobId) {
+        return jobId == 800;
+    }
+
+    public static boolean isBeginnerJob(short jobId) {
+        return jobId % 1000 == 0 || jobId == 2001;
+    }
+    // get_job_level
+    public static int getJobLevel(int jobId)
+    {
+        int v1; // esi
+        int v2; // esi
+        int result; // eax
+        if ( !(jobId % 100 == 0) || jobId == 2001 )
+            return 1;
+        if (isDualBlade(jobId))
+            v1 = (jobId - 430) / 2;
+        else
+            v1 = jobId % 10;
+        v2 = v1 + 2;
+        if ( v2 >= 2 && (v2 <= 4 || v2 <= 10 && isEvan((short) jobId)) )
+            result = v2;
+        else
+            result = 0;
+        return result;
+    }
 }

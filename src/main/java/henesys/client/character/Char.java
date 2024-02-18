@@ -4,11 +4,13 @@ import henesys.Server;
 import henesys.client.Account;
 import henesys.client.Client;
 import henesys.client.character.avatar.AvatarLook;
+import henesys.client.character.skills.info.SkillInfo;
 import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.connection.OutPacket;
 import henesys.connection.packet.*;
 import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
+import henesys.constants.JobConstants;
 import henesys.constants.SkillConstants;
 import henesys.enums.*;
 import henesys.items.BodyPart;
@@ -18,9 +20,11 @@ import henesys.items.Item;
 import henesys.items.container.ItemInfo;
 import henesys.life.room.MiniRoom;
 import henesys.loaders.ItemData;
+import henesys.loaders.SkillData;
 import henesys.skills.Skill;
 import henesys.util.FileTime;
 import henesys.util.Position;
+import henesys.util.Util;
 import henesys.world.Channel;
 import henesys.world.World;
 import henesys.world.field.Field;
@@ -77,6 +81,8 @@ public class Char {
     private int tamingMobFatigue;
     private MiniRoom miniRoom;
     private String ADBoardRemoteMsg;
+    private Map<BaseStat, Long> baseStats = new HashMap<>();
+    private Map<BaseStat, Set<Integer>> nonAddBaseStats = new HashMap<>();
     public Char() {
         temporaryStatManager = new TemporaryStatManager(this);
     }
@@ -260,8 +266,7 @@ public class Char {
         }
 
         if (mask.isInMask(DBChar.SkillRecord)) {
-//                Set<Skill> skillRecord = getSkills();
-            Set<Skill> skillRecord = new HashSet<>();
+            Set<Skill> skillRecord = getSkills();
             outPacket.encodeShort(skillRecord.size());
             for (Skill skill : skillRecord) {
                 outPacket.encodeInt(skill.getSkillId());
@@ -992,5 +997,138 @@ public class Char {
 
     public void setFoothold(short foothold) {
         this.foothold = foothold;
+    }
+
+    public Skill getSkill(int id) {
+        for (Skill s : getSkills()) {
+            if (s.getSkillId() == id) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Removes a Skill's info from the current base stat cache.
+     *
+     * @param skill The skill to remove
+     */
+    public void removeFromBaseStatCache(Skill skill) {
+        SkillInfo si = SkillData.getSkillInfoById(skill.getSkillId());
+        Map<BaseStat, Integer> stats = si.getBaseStatValues(this, skill.getCurrentLevel());
+        stats.forEach(this::removeBaseStat);
+    }
+
+    /**
+     * Removes a BaseStat's amount from this Char's BaseStat cache.
+     *
+     * @param bs     The BaseStat
+     * @param amount the amount of BaseStat to remove
+     */
+    public void removeBaseStat(BaseStat bs, int amount) {
+        addBaseStat(bs, -amount);
+    }
+
+    /**
+     * Adds a BaseStat's amount to this Char's BaseStat cache.
+     *
+     * @param bs     The BaseStat
+     * @param amount the amount of BaseStat to add
+     */
+    public void addBaseStat(BaseStat bs, int amount) {
+        if (bs != null) {
+            if (bs.isNonAdditiveStat()) {
+                if (!getNonAddBaseStats().containsKey(bs)) {
+                    getNonAddBaseStats().put(bs, new HashSet<>());
+                }
+                getNonAddBaseStats().get(bs).add(amount);
+            } else if (bs == BaseStat.mastery) {
+                if (getBaseStats().getOrDefault(bs, 0L) < amount) {
+                    getBaseStats().put(bs, (long) amount);
+                }
+            } else {
+                getBaseStats().put(bs, getBaseStats().getOrDefault(bs, 0L) + amount);
+            }
+        }
+    }
+
+
+    /**
+     * Removes a Skill from this Char.
+     *
+     * @param skillID the id of the skill that should be removed
+     */
+    public void removeSkill(int skillID) {
+        Skill skill = Util.findWithPred(getSkills(), s -> s.getSkillId() == skillID);
+        if (skill != null) {
+            if (SkillConstants.isPassiveSkill(skillID)) {
+                removeFromBaseStatCache(skill);
+            }
+            getSkills().remove(skill);
+
+        }
+    }
+
+    /**
+     * Adds a {@link Skill} to this Char. Changes the old Skill if the Char already has a Skill
+     * with the same id. Removes the skill if the given skill's id is 0.
+     *
+     * @param skill                The Skill this Char should get.
+     * @param addRegardlessOfLevel if this is true, the skill will not be removed from the char, even if the cur level
+     *                             of the given skill is 0.
+     */
+    public void addSkill(Skill skill, boolean addRegardlessOfLevel) {
+        if (!addRegardlessOfLevel && skill.getCurrentLevel() == 0) {
+            removeSkill(skill.getSkillId());
+            return;
+        }
+        skill.setCharId(getId());
+        boolean isPassive = SkillConstants.isPassiveSkill(skill.getSkillId());
+        boolean isChanged;
+        if (getSkills().stream().noneMatch(s -> s.getSkillId() == skill.getSkillId())) {
+            getSkills().add(skill);
+            isChanged = true;
+        } else {
+            Skill oldSkill = getSkill(skill.getSkillId());
+            isChanged = oldSkill.getCurrentLevel() != skill.getCurrentLevel();
+            if (isPassive && isChanged) {
+                removeFromBaseStatCache(oldSkill);
+            }
+            oldSkill.setCurrentLevel(skill.getCurrentLevel());
+            oldSkill.setMasterLevel(skill.getMasterLevel());
+        }
+        // Change cache accordingly
+        if (isPassive && isChanged) {
+            addToBaseStatCache(skill);
+        }
+    }
+
+    /**
+     * Adds a Skill's info to the current base stat cache.
+     *
+     * @param skill The skill to add
+     */
+    public void addToBaseStatCache(Skill skill) {
+        SkillInfo si = SkillData.getSkillInfoById(skill.getSkillId());
+        if (SkillConstants.isPassiveSkill(skill.getSkillId()) && !JobConstants.isManager(getCharacterStat().getJob())) {
+            Map<BaseStat, Integer> stats = si.getBaseStatValues(this, skill.getCurrentLevel());
+            stats.forEach(this::addBaseStat);
+        }
+    }
+
+    public Map<BaseStat, Long> getBaseStats() {
+        return baseStats;
+    }
+
+    public void setBaseStats(Map<BaseStat, Long> baseStats) {
+        this.baseStats = baseStats;
+    }
+
+    public Map<BaseStat, Set<Integer>> getNonAddBaseStats() {
+        return nonAddBaseStats;
+    }
+
+    public void setNonAddBaseStats(Map<BaseStat, Set<Integer>> nonAddBaseStats) {
+        this.nonAddBaseStats = nonAddBaseStats;
     }
 }

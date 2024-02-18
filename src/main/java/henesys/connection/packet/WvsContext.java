@@ -8,10 +8,9 @@ import henesys.enums.Stat;
 import henesys.handlers.header.OutHeader;
 import henesys.items.Equip;
 import henesys.items.Item;
+import henesys.skills.Skill;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class WvsContext {
 
@@ -117,6 +116,22 @@ public class WvsContext {
             case BagRemoveSlot:
                 break;
         }
+        return outPacket;
+    }
+
+    public static OutPacket changeSkillRecordResult(Skill skill) {
+        List<Skill> skills = new ArrayList<>();
+        skills.add(skill);
+        return changeSkillRecordResult(skills, true, true);
+    }
+    public static OutPacket changeSkillRecordResult(List<Skill> skills, boolean exclRequestSent, boolean sn) {
+        OutPacket outPacket = new OutPacket(OutHeader.CHANGE_SKILL_RECORD_RESULT);
+
+        outPacket.encodeByte(exclRequestSent);
+        outPacket.encodeShort(skills.size());
+        skills.forEach((skill) -> skill.encode(outPacket));
+        outPacket.encodeByte(sn);
+
         return outPacket;
     }
 }

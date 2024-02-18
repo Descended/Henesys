@@ -1,6 +1,9 @@
 package henesys.skills;
 
 
+import henesys.connection.OutPacket;
+import henesys.util.FileTime;
+
 /**
  * Created on 12/20/2017.
  */
@@ -73,5 +76,12 @@ public class Skill {
     @Override
     public String toString() {
         return "id = " + getSkillId() + ", cur = " + getCurrentLevel() + ", master = " + getMasterLevel();
+    }
+
+    public void encode(OutPacket outPacket) {
+        outPacket.encodeInt(getSkillId());
+        outPacket.encodeInt(getCurrentLevel());
+        outPacket.encodeInt(getMasterLevel());
+        outPacket.encodeFT(FileTime.fromType(FileTime.Type.PLAIN_ZERO));
     }
 }

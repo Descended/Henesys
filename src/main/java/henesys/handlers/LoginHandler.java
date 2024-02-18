@@ -114,6 +114,8 @@ public class LoginHandler {
         Channel channel = Server.getInstance().getWorldById(worldId).getChannelById(channelId);
         if (c.getAccount().hasCharacter(characterId)) {
             c.setChr(c.getAccount().getCharById(characterId));
+            SkillDao skillDao = new SkillDao();
+            c.getChr().setSkills(skillDao.getSkillsByCharId(characterId));
             InventoryDao inventoryDao = new InventoryDao();
             List<Inventory> inventories = inventoryDao.getInventoriesByCharacterId(characterId);
             for (Inventory inventory : inventories) {

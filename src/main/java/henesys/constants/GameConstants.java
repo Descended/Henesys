@@ -16,6 +16,9 @@ public class GameConstants {
     public static final int MAX_DROP_CHANCE = 10000;
     public static final int DROP_HEIGHT = 100; // was 20
 
+    public static final int BEGINNER_SP_MAX_LV = 7;
+    public static final int RESISTANCE_SP_MAX_LV = 10;
+
     public static boolean isValidName(String name) {
         return name.length() >= 4 && name.length() <= 13 && Util.isDigitLetterString(name);
     }
