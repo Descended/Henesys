@@ -1,7 +1,9 @@
 package henesys.items;
 
 import henesys.Server;
+import henesys.constants.ItemConstants;
 import henesys.enums.InvType;
+import henesys.enums.WeaponType;
 import henesys.items.container.ItemInfo;
 import henesys.loaders.ItemData;
 import org.apache.logging.log4j.LogManager;
@@ -145,5 +147,24 @@ public class Inventory {
 
     public boolean isFull() {
         return getItems().size() >= getSlots();
+    }
+
+    public WeaponType getEquippedWeaponType() {
+        Item weapon = getEquippedItemByBodyPart(BodyPart.Weapon);
+        if (weapon == null) {
+            return WeaponType.Barehand;
+        }
+        return WeaponType.getByVal(ItemConstants.getWeaponType(weapon.getItemId()));
+    }
+
+    /**
+     * Returns the Equip equipped at a certain {@link BodyPart}.
+     *
+     * @param bodyPart The requested bodyPart.
+     * @return The Equip corresponding to <code>bodyPart</code>. Null if there is none.
+     */
+    public Item getEquippedItemByBodyPart(BodyPart bodyPart) {
+        List<Item> items = getItemsByBodyPart(bodyPart);
+        return !items.isEmpty() ? items.getFirst() : null;
     }
 }

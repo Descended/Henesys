@@ -51,6 +51,12 @@
             <artifactId>bcrypt</artifactId>
             <version>0.10.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fathzer/javaluator -->
+        <dependency>
+            <groupId>com.fathzer</groupId>
+            <artifactId>javaluator</artifactId>
+            <version>3.0.3</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -332,4 +332,11 @@ public class ItemConstants {
     public static boolean isChair(int itemID) {
         return itemID / 10000 == 301;
     }
+
+    public static int getWeaponType(int itemID) {
+        if (itemID / 1000000 != 1) {
+            return 0;
+        }
+        return getItemPrefix(itemID) % 100;
+    }
 }
