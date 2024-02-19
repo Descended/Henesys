@@ -559,6 +559,9 @@ public class Field {
         putLifeController(life, controller);
     }
 
+    public Life getLifeByObjectID(int objectId) {
+        return getLifes().getOrDefault(objectId, null);
+    }
     public void spawnLife(Life life, Char onlyChar) {
         addLife(life);
         if (!getChars().isEmpty()) {
