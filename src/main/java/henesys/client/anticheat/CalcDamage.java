@@ -20,6 +20,55 @@ public class CalcDamage {
         this.rndForCheckDamageMiss = new Rand32(s1, s2, s3);
         this.rndGenForMob = new Rand32(s1, s2, s3);
     }
+
+    public double calcMobBaseDamage(int p1, int nRand) {
+        return getRandom(nRand, p1, 0.85 * p1);
+    }
+
+    public double adjustBaseDefense(double damage, int nAdd, int nAttackLevel, int nTargetLevel, int nPsdDr) {
+        var v5 = nAdd * 0.25;
+        var v6 = v5 + 0.5;
+        var nFixedCanceling = v5 + 0.5;
+        var v7 = Math.sqrt(v5);
+        var v8 = nPsdDr * v7 / 100 + v7;
+        if (nTargetLevel < nAttackLevel)
+        {
+            var v9 = Math.abs(nAttackLevel - nTargetLevel);
+            double v10 = 4 * v9;
+
+            if (4 * v9 >= v6) v10 = v6;
+
+            double v11 = 2 * v9;
+            nFixedCanceling = v6 - v10;
+
+            if (v11 >= v8) v11 = v8;
+
+            v8 -= v11;
+        }
+
+        var result = damage - nFixedCanceling;
+        var v13 = damage * (100 - v8) / 100.0;
+
+        if (v13 <= result) result = v13;
+        if (result <= 1.0) result = 1.0;
+
+        return result;
+    }
+
+    // int __cdecl `anonymous namespace'::calc_evar(int nEVA, int nMobACC, int nTargetLevel, int nAttackLevel, int nEr)
+    int calcEvar(int eva, int mobAccuracy, int targetLevel, int attackLevel, int er) {
+        int sqrtEVA = (int) Math.sqrt(eva);
+        int sqrtMobACC = (int) Math.sqrt(mobAccuracy);
+        int nFormulaRes = sqrtEVA - sqrtMobACC + er * (sqrtEVA - sqrtMobACC) / 100;
+        int result = Math.max(nFormulaRes, 0);
+        if (attackLevel > targetLevel) {
+            double nDiff = 5 * (attackLevel - targetLevel);
+            if (nDiff >= result)
+                nDiff = result;
+            result -= (int) nDiff;
+        }
+        return result;
+    }
     public static double getRandom(int rand, double f0, double f1) {
         double realF1 = f1;
         double realF0 = f0;
