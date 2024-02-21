@@ -55,6 +55,15 @@ public class CalcDamage {
         return result;
     }
 
+    public boolean checkPDamageMiss(int eva, int playerLevel, int mobAcc, int attackLevel, long seed) {
+        if (eva > 9999) {
+            eva = 9999;
+        }
+        int er = 0;
+        int evar = calcEvar(eva, mobAcc, playerLevel, attackLevel, er);
+        int nRand = (int) getRandom((int) seed, 100, 0);
+        return evar > nRand;
+    }
     // int __cdecl `anonymous namespace'::calc_evar(int nEVA, int nMobACC, int nTargetLevel, int nAttackLevel, int nEr)
     int calcEvar(int eva, int mobAccuracy, int targetLevel, int attackLevel, int er) {
         int sqrtEVA = (int) Math.sqrt(eva);
