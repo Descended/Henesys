@@ -65,7 +65,7 @@ public class CalcDamage {
         return evar > nRand;
     }
     // int __cdecl `anonymous namespace'::calc_evar(int nEVA, int nMobACC, int nTargetLevel, int nAttackLevel, int nEr)
-    int calcEvar(int eva, int mobAccuracy, int targetLevel, int attackLevel, int er) {
+    public int calcEvar(int eva, int mobAccuracy, int targetLevel, int attackLevel, int er) {
         int sqrtEVA = (int) Math.sqrt(eva);
         int sqrtMobACC = (int) Math.sqrt(mobAccuracy);
         int nFormulaRes = sqrtEVA - sqrtMobACC + er * (sqrtEVA - sqrtMobACC) / 100;
