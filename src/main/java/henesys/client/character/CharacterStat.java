@@ -44,7 +44,7 @@ public class CharacterStat {
         extendSP = new ExtendSP(7);
     }
 
-    public CharacterStat(String name, byte gender, byte skin, int face, int hair) {
+    public CharacterStat(String name, byte gender, byte skin, int face, int hair, short job, short subJob) {
         this.name = name;
         this.gender = gender;
         this.skin = skin;
