@@ -1,5 +1,6 @@
 package henesys.connection.packet;
 
+import henesys.client.BroadcastMsg;
 import henesys.client.character.ExtendSP;
 import henesys.connection.OutPacket;
 import henesys.enums.InvType;
@@ -131,6 +132,14 @@ public class WvsContext {
         outPacket.encodeShort(skills.size());
         skills.forEach((skill) -> skill.encode(outPacket));
         outPacket.encodeByte(sn);
+
+        return outPacket;
+    }
+
+    public static OutPacket broadcastMsg(BroadcastMsg broadcastMsg) {
+        OutPacket outPacket = new OutPacket(OutHeader.BROADCAST_MSG);
+
+        broadcastMsg.encode(outPacket);
 
         return outPacket;
     }
