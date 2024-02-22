@@ -12,6 +12,7 @@ import henesys.connection.OutPacket;
 import henesys.enums.LoginType;
 import henesys.enums.PicStatus;
 import henesys.handlers.header.OutHeader;
+import henesys.util.FileTime;
 import henesys.util.Position;
 import henesys.util.container.Tuple;
 import henesys.world.Channel;
@@ -73,9 +74,12 @@ public class Login {
             outPacket.encodeByte(1); // sMsg
             outPacket.encodeLong(0);
         } else if (loginType == LoginType.Blocked) {
-            // TODO: Implement Blocked LoginType
+            outPacket.encodeByte(0);
+            outPacket.encodeInt(0);
+            outPacket.encodeFT(FileTime.currentTime());
         } else {
-            //
+            outPacket.encodeByte(0); // these two aren't in ida, wtf
+            outPacket.encodeInt(0);
         }
 
         return outPacket;
