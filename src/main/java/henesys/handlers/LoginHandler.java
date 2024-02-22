@@ -17,6 +17,7 @@ import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
 import henesys.enums.CharNameResult;
 import henesys.enums.InvType;
+import henesys.enums.JobType;
 import henesys.enums.LoginType;
 import henesys.handlers.header.InHeader;
 import henesys.items.Equip;
@@ -154,7 +155,7 @@ public class LoginHandler {
     public static void handleCreateNewCharacter(Client c, InPacket inPacket) {
         Account acc = c.getAccount();
         String name = inPacket.decodeString();
-        int job = inPacket.decodeInt();
+        int job = JobType.getTypeByVal(inPacket.decodeInt()).getStartJobByType();
         short subJob = inPacket.decodeShort();
         int face = inPacket.decodeInt();
         int hair = inPacket.decodeInt();
@@ -188,7 +189,7 @@ public class LoginHandler {
             return;
         }
         int finalHair = hair + hairColor;
-        CharacterStat characterStat = new CharacterStat(name, gender, (byte) skin, face, hair);
+        CharacterStat characterStat = new CharacterStat(name, gender, (byte) skin, face, hair, (short) job, subJob);
         characterStat.setLevel((byte) 1);
         characterStat.setStr((short) 4);
         characterStat.setDex((short) 4);

@@ -2,6 +2,13 @@ package henesys.constants;
 
 public class JobConstants {
 
+    public static final int Beginner = 0;
+    public static final int Noblesse = 1000;
+    public static final int Legend = 2000;
+    public static final int Citizen = 3000;
+
+    public static final int Evan = 2001;
+
     public static boolean isExtendSpJob(short jobId) {
         return isResistance(jobId) || isThirdJob(jobId) && isAdventurerMage(jobId) || isEvanJr(jobId);
     }
