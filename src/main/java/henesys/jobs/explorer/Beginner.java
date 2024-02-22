@@ -2,7 +2,7 @@ package henesys.jobs.explorer;
 
 import henesys.jobs.Job;
 
-public class Beginner extends Job {
+public class Beginner implements Job {
 
     public static final int FOLLOW_THE_LEAD = 8;
     public static final int BLESSING_OF_THE_FAIRY = 12;
@@ -64,9 +64,24 @@ public class Beginner extends Job {
     public static final int DECENT_SHARP_EYES = 8002;
     public static final int DECENT_HYPER_BODY = 8003;
 
-    private int[] addedSkills = new int [] {
-            THREE_SNAILS,
-            RECOVERY,
-            NIMBLE_FEET
-    };
+    @Override
+    public void handleSkill(int skillId) {
+
+    }
+
+    @Override
+    public void handleAttack(int skillId) {
+
+    }
+
+    @Override
+    public void handleBuff(int skillId) {
+
+    }
+
+    @Override
+    public boolean isHandlerOfSkill(int skillId) {
+        return false;
+    }
+
 }
