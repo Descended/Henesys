@@ -197,9 +197,9 @@ public class LoginHandler {
         characterStat.setLuk((short) 4);
         characterStat.setHp(50);
         characterStat.setMaxHp(50);
-        characterStat.setMp(5);
-        characterStat.setMaxMp(5);
-        characterStat.setFieldId(180000001);
+        characterStat.setMp(50);
+        characterStat.setMaxMp(50);
+        characterStat.setFieldId(100000000);
         characterStatDao = new CharacterStatDao();
         int characterStatId = characterStatDao.createCharStat(characterStat);
         AvatarLook avatarLook = new AvatarLook(gender, skin, face, hair, weapon, items);
