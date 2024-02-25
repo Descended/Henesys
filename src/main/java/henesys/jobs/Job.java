@@ -1,12 +1,14 @@
 package henesys.jobs;
 
+import henesys.client.Client;
+
 public interface Job {
 
-    void handleSkill(int skillId);
+    void handleSkill(Client c, int skillId, byte skillLevel);
 
-    void handleAttack(int skillId);
+    void handleAttack(Client c, int skillId, byte skillLevel);
 
-    void handleBuff(int skillId);
+    void handleBuff(Client c, int skillId, byte skillLevel);
 
     boolean isHandlerOfSkill(int skillId);
 }

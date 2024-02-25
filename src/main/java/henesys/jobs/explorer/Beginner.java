@@ -1,6 +1,12 @@
 package henesys.jobs.explorer;
 
+import henesys.client.Client;
+import henesys.client.character.skills.info.SkillInfo;
+import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.jobs.Job;
+import henesys.loaders.SkillData;
+import henesys.skills.Option;
+import henesys.skills.Skill;
 
 public class Beginner implements Job {
 
@@ -65,19 +71,39 @@ public class Beginner implements Job {
     public static final int DECENT_HYPER_BODY = 8003;
 
     @Override
-    public void handleSkill(int skillId) {
+    public void handleSkill(Client c, int skillId, byte skillLevel) {
+        Option o1 = new Option();
+        Option o2 = new Option();
+        Skill skill = SkillData.getSkillDeepCopyById(skillId);
+        SkillInfo si = null;
+        TemporaryStatManager tsm = c.getChr().getTemporaryStatManager();
+        if(skill != null) {
+            si = SkillData.getSkillInfoById(skillId);
+        }
+        switch (skillId) {
+            case NIMBLE_FEET:
+                o1.nOption = 5 + 5 * skillLevel;
+                o1.rOption = skillId;
+                o1.tOption = 4 * skillLevel;
+                break;
+            case RECOVERY:
+                break;
+            default:
+                break;
+        }
 
     }
 
     @Override
-    public void handleAttack(int skillId) {
+    public void handleAttack(Client c, int skillId, byte skillLevel) {
 
     }
 
     @Override
-    public void handleBuff(int skillId) {
+    public void handleBuff(Client c, int skillId, byte skillLevel) {
 
     }
+
 
     @Override
     public boolean isHandlerOfSkill(int skillId) {
