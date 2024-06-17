@@ -1,14 +1,13 @@
 package henesys.client.character;
 
 import henesys.Server;
-import henesys.client.Account;
 import henesys.client.Client;
+import henesys.client.anticheat.CalcDamage;
 import henesys.client.character.avatar.AvatarLook;
 import henesys.client.character.skills.info.SkillInfo;
 import henesys.client.character.skills.temp.TemporaryStatManager;
 import henesys.connection.OutPacket;
 import henesys.connection.packet.*;
-import henesys.constants.GameConstants;
 import henesys.constants.ItemConstants;
 import henesys.constants.JobConstants;
 import henesys.constants.SkillConstants;
@@ -83,6 +82,7 @@ public class Char {
     private String ADBoardRemoteMsg;
     private Map<BaseStat, Long> baseStats = new HashMap<>();
     private Map<BaseStat, Set<Integer>> nonAddBaseStats = new HashMap<>();
+    private CalcDamage calcDamage;
     public Char() {
         temporaryStatManager = new TemporaryStatManager(this);
     }
@@ -1130,5 +1130,13 @@ public class Char {
 
     public void setNonAddBaseStats(Map<BaseStat, Set<Integer>> nonAddBaseStats) {
         this.nonAddBaseStats = nonAddBaseStats;
+    }
+
+    public CalcDamage getDamageCalc() {
+        return calcDamage;
+    }
+
+    public void setDamageCalc(CalcDamage calcDamage) {
+        this.calcDamage = calcDamage;
     }
 }
